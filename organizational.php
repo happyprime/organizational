@@ -10,7 +10,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 */
 
 // Include handling of meta for default content types.
-include_once __DIR__ . '/includes/organizational-meta.php';
+require_once __DIR__ . '/includes/organizational-meta.php';
 
 class Organizational {
 	/**
@@ -148,9 +148,16 @@ class Organizational {
 	 */
 	public function display_settings() {
 		register_setting( 'general', 'organizational_names', array( $this, 'sanitize_names' ) );
-		add_settings_field( 'organizational-names', 'Organizational Names', array( $this, 'general_settings_names' ), 'general', 'default', array(
-			'label_for' => 'organizational_names',
-		) );
+		add_settings_field(
+			'organizational-names',
+			'Organizational Names',
+			array( $this, 'general_settings_names' ),
+			'general',
+			'default',
+			array(
+				'label_for' => 'organizational_names',
+			)
+		);
 	}
 
 	/**
@@ -168,7 +175,7 @@ class Organizational {
 			}
 
 			$clean_names[ $name ]['singular'] = sanitize_text_field( $data['singular'] );
-			$clean_names[ $name ]['plural'] = sanitize_text_field( $data['plural'] );
+			$clean_names[ $name ]['plural']   = sanitize_text_field( $data['plural'] );
 		}
 
 		wp_schedule_single_event( time() + 1, 'organizational_flush_rewrite_rules' );
@@ -203,22 +210,34 @@ class Organizational {
 			$names['publication'] = array();
 		}
 
-		$display_names['project'] = wp_parse_args( $names['project'], array(
-			'singular' => 'Project',
-			'plural' => 'Projects',
-		) );
-		$display_names['people'] = wp_parse_args( $names['people'], array(
-			'singular' => 'Person',
-			'plural' => 'People',
-		) );
-		$display_names['entity'] = wp_parse_args( $names['entity'], array(
-			'singular' => 'Entity',
-			'plural' => 'Entities',
-		) );
-		$display_names['publication'] = wp_parse_args( $names['publication'], array(
-			'singular' => 'Publication',
-			'plural' => 'Publications',
-		) );
+		$display_names['project']     = wp_parse_args(
+			$names['project'],
+			array(
+				'singular' => 'Project',
+				'plural'   => 'Projects',
+			)
+		);
+		$display_names['people']      = wp_parse_args(
+			$names['people'],
+			array(
+				'singular' => 'Person',
+				'plural'   => 'People',
+			)
+		);
+		$display_names['entity']      = wp_parse_args(
+			$names['entity'],
+			array(
+				'singular' => 'Entity',
+				'plural'   => 'Entities',
+			)
+		);
+		$display_names['publication'] = wp_parse_args(
+			$names['publication'],
+			array(
+				'singular' => 'Publication',
+				'plural'   => 'Publications',
+			)
+		);
 		?>
 		<div class="organizational-settings-names">
 			<p>Changing the settings here will override the default labels for the content types provided by the Organizational plugin. The default labels are listed to the left of each field. The <strong>singular</strong> label will also be used as a slug in URLs.</p>
@@ -302,7 +321,7 @@ class Organizational {
 
 		return array(
 			'singular' => esc_html( $names[ $object_type ]['singular'] ),
-			'plural' => esc_html( $names[ $object_type ]['plural'] ),
+			'plural'   => esc_html( $names[ $object_type ]['plural'] ),
 		);
 	}
 
@@ -321,7 +340,7 @@ class Organizational {
 			return;
 		}
 
-		$default_labels = array(
+		$default_labels      = array(
 			'name'               => __( 'Projects', 'organizational' ),
 			'singular_name'      => __( 'Project', 'organizational' ),
 			'all_items'          => __( 'All Projects', 'organizational' ),
@@ -334,42 +353,42 @@ class Organizational {
 			'not_found_in_trash' => __( 'No Projects found in trash', 'organizational' ),
 		);
 		$default_description = __( 'Projects belonging to the center.', 'organizational' );
-		$default_slug = 'project';
+		$default_slug        = 'project';
 
 		$names = $this->_get_object_type_names( 'project' );
 		$names = apply_filters( 'organizational_project_type_names', $names );
 
 		if ( false !== $names && isset( $names['singular'] ) && isset( $names['plural'] ) ) {
-			$labels = $this->_build_labels( $names );
+			$labels      = $this->_build_labels( $names );
 			$description = $this->_build_description( $names['plural'] );
-			$slug = sanitize_title( strtolower( $names['singular'] ) );
+			$slug        = sanitize_title( strtolower( $names['singular'] ) );
 		} else {
-			$labels = $default_labels;
+			$labels      = $default_labels;
 			$description = $default_description;
-			$slug = $default_slug;
+			$slug        = $default_slug;
 		}
 
 		$args = array(
-			'labels' => $labels,
-			'description' => $description,
-			'public' => true,
+			'labels'       => $labels,
+			'description'  => $description,
+			'public'       => true,
 			'hierarchical' => false,
-			'menu_icon' => 'dashicons-analytics',
-			'supports' => array(
+			'menu_icon'    => 'dashicons-analytics',
+			'supports'     => array(
 				'title',
 				'editor',
 				'revisions',
 				'thumbnail',
 				'excerpt',
 			),
-			'taxonomies' => array( 'category', 'post_tag' ),
-			'has_archive' => true,
-			'rewrite' => array(
-				'slug' => $slug,
+			'taxonomies'   => array( 'category', 'post_tag' ),
+			'has_archive'  => true,
+			'rewrite'      => array(
+				'slug'       => $slug,
 				'with_front' => false,
 			),
 			'show_in_rest' => true,
-			'rest_base' => 'projects', // Note that this can be different from the post type slug.
+			'rest_base'    => 'projects', // Note that this can be different from the post type slug.
 		);
 
 		register_post_type( $this->project_content_type, $args );
@@ -390,7 +409,7 @@ class Organizational {
 			return;
 		}
 
-		$default_labels = array(
+		$default_labels      = array(
 			'name'               => __( 'People', 'organizational' ),
 			'singular_name'      => __( 'Person', 'organizational' ),
 			'all_items'          => __( 'All People', 'organizational' ),
@@ -403,28 +422,28 @@ class Organizational {
 			'not_found_in_trash' => __( 'No People found in trash', 'organizational' ),
 		);
 		$default_description = __( 'People involved with the center.', 'organizational' );
-		$default_slug = 'people';
+		$default_slug        = 'people';
 
 		$names = $this->_get_object_type_names( 'people' );
 		$names = apply_filters( 'organizational_people_type_names', $names );
 
 		if ( false !== $names && isset( $names['singular'] ) && isset( $names['plural'] ) ) {
-			$labels = $this->_build_labels( $names );
+			$labels      = $this->_build_labels( $names );
 			$description = $this->_build_description( $names['plural'] );
-			$slug = sanitize_title( strtolower( $names['singular'] ) );
+			$slug        = sanitize_title( strtolower( $names['singular'] ) );
 		} else {
-			$labels = $default_labels;
+			$labels      = $default_labels;
 			$description = $default_description;
-			$slug = $default_slug;
+			$slug        = $default_slug;
 		}
 
 		$args = array(
-			'labels' => $labels,
-			'description' => $description,
-			'public' => true,
+			'labels'       => $labels,
+			'description'  => $description,
+			'public'       => true,
 			'hierarchical' => false,
-			'menu_icon' => 'dashicons-id-alt',
-			'supports' => array(
+			'menu_icon'    => 'dashicons-id-alt',
+			'supports'     => array(
 				'title',
 				'author',
 				'editor',
@@ -432,14 +451,14 @@ class Organizational {
 				'thumbnail',
 				'excerpt',
 			),
-			'taxonomies' => array( 'category', 'post_tag' ),
-			'has_archive' => true,
-			'rewrite' => array(
-				'slug' => $slug,
+			'taxonomies'   => array( 'category', 'post_tag' ),
+			'has_archive'  => true,
+			'rewrite'      => array(
+				'slug'       => $slug,
 				'with_front' => false,
 			),
 			'show_in_rest' => true,
-			'rest_base' => 'people',
+			'rest_base'    => 'people',
 		);
 
 		register_post_type( $this->people_content_type, $args );
@@ -460,7 +479,7 @@ class Organizational {
 			return;
 		}
 
-		$default_labels = array(
+		$default_labels      = array(
 			'name'               => __( 'Publications', 'organizational' ),
 			'singular_name'      => __( 'Publications', 'organizational' ),
 			'all_items'          => __( 'All Publications', 'organizational' ),
@@ -473,42 +492,42 @@ class Organizational {
 			'not_found_in_trash' => __( 'No Publications found in trash', 'organizational' ),
 		);
 		$default_description = __( 'Publications involved with the center.', 'organizational' );
-		$default_slug = 'publication';
+		$default_slug        = 'publication';
 
 		$names = $this->_get_object_type_names( 'publication' );
 		$names = apply_filters( 'organizational_publication_type_names', $names );
 
 		if ( false !== $names && isset( $names['singular'] ) && isset( $names['plural'] ) ) {
-			$labels = $this->_build_labels( $names );
+			$labels      = $this->_build_labels( $names );
 			$description = $this->_build_description( $names['plural'] );
-			$slug = sanitize_title( strtolower( $names['singular'] ) );
+			$slug        = sanitize_title( strtolower( $names['singular'] ) );
 		} else {
-			$labels = $default_labels;
+			$labels      = $default_labels;
 			$description = $default_description;
-			$slug = $default_slug;
+			$slug        = $default_slug;
 		}
 
 		$args = array(
-			'labels' => $labels,
-			'description' => $description,
-			'public' => true,
+			'labels'       => $labels,
+			'description'  => $description,
+			'public'       => true,
 			'hierarchical' => false,
-			'menu_icon' => 'dashicons-book',
-			'supports' => array(
+			'menu_icon'    => 'dashicons-book',
+			'supports'     => array(
 				'title',
 				'editor',
 				'revisions',
 				'thumbnail',
 				'excerpt',
 			),
-			'taxonomies' => array( 'category', 'post_tag' ),
-			'has_archive' => true,
-			'rewrite' => array(
-				'slug' => $slug,
+			'taxonomies'   => array( 'category', 'post_tag' ),
+			'has_archive'  => true,
+			'rewrite'      => array(
+				'slug'       => $slug,
 				'with_front' => false,
 			),
 			'show_in_rest' => true,
-			'rest_base' => 'publications',
+			'rest_base'    => 'publications',
 		);
 
 		register_post_type( $this->publication_content_type, $args );
@@ -529,55 +548,55 @@ class Organizational {
 			return;
 		}
 
-		$default_labels = array(
-			'name' => __( 'Organizations', 'organizational' ),
-			'singular_name' => __( 'Organization', 'organizational' ),
-			'all_items' => __( 'All Organizations', 'organizational' ),
-			'add_new_item' => __( 'Add Organization', 'organizational' ),
-			'edit_item' => __( 'Edit Organization', 'organizational' ),
-			'new_item' => __( 'New Organization', 'organizational' ),
-			'view_item' => __( 'View Organization', 'organizational' ),
-			'search_items' => __( 'Search Organizations', 'organizational' ),
-			'not_found' => __( 'No Organizations found', 'organizational' ),
+		$default_labels      = array(
+			'name'               => __( 'Organizations', 'organizational' ),
+			'singular_name'      => __( 'Organization', 'organizational' ),
+			'all_items'          => __( 'All Organizations', 'organizational' ),
+			'add_new_item'       => __( 'Add Organization', 'organizational' ),
+			'edit_item'          => __( 'Edit Organization', 'organizational' ),
+			'new_item'           => __( 'New Organization', 'organizational' ),
+			'view_item'          => __( 'View Organization', 'organizational' ),
+			'search_items'       => __( 'Search Organizations', 'organizational' ),
+			'not_found'          => __( 'No Organizations found', 'organizational' ),
 			'not_found_in_trash' => __( 'No Organizations found in trash', 'organizational' ),
 		);
 		$default_description = __( 'Organizations involved with the center.', 'organizational' );
-		$default_slug = 'entity';
+		$default_slug        = 'entity';
 
 		$names = $this->_get_object_type_names( 'entity' );
 		$names = apply_filters( 'organizational_entity_type_names', $names );
 
 		if ( false !== $names && isset( $names['singular'] ) && isset( $names['plural'] ) ) {
-			$labels = $this->_build_labels( $names );
+			$labels      = $this->_build_labels( $names );
 			$description = $this->_build_description( $names['plural'] );
-			$slug = sanitize_title( strtolower( $names['singular'] ) );
+			$slug        = sanitize_title( strtolower( $names['singular'] ) );
 		} else {
-			$labels = $default_labels;
+			$labels      = $default_labels;
 			$description = $default_description;
-			$slug = $default_slug;
+			$slug        = $default_slug;
 		}
 
 		$args = array(
-			'labels' => $labels,
-			'description' => $description,
-			'public' => true,
+			'labels'       => $labels,
+			'description'  => $description,
+			'public'       => true,
 			'hierarchical' => false,
-			'menu_icon' => 'dashicons-groups',
-			'supports' => array(
+			'menu_icon'    => 'dashicons-groups',
+			'supports'     => array(
 				'title',
 				'editor',
 				'revisions',
 				'thumbnail',
 				'excerpt',
 			),
-			'taxonomies' => array( 'category', 'post_tag' ),
-			'has_archive' => true,
-			'rewrite' => array(
-				'slug' => $slug,
+			'taxonomies'   => array( 'category', 'post_tag' ),
+			'has_archive'  => true,
+			'rewrite'      => array(
+				'slug'       => $slug,
 				'with_front' => false,
 			),
 			'show_in_rest' => true,
-			'rest_base' => 'organizations',
+			'rest_base'    => 'organizations',
 		);
 
 		register_post_type( $this->entity_content_type, $args );
@@ -597,24 +616,24 @@ class Organizational {
 		}
 
 		$args = array(
-			'labels' => array(
-				'name' => __( 'Organization Types', 'organizational' ),
-				'singular_name' => __( 'Organization Type', 'organizational' ),
-				'search_items' => __( 'Search Organization Types', 'organizational' ),
-				'all_items' => __( 'All Organization Types', 'organizational' ),
-				'parent_item' => __( 'Parent Organization Type', 'organizational' ),
+			'labels'            => array(
+				'name'              => __( 'Organization Types', 'organizational' ),
+				'singular_name'     => __( 'Organization Type', 'organizational' ),
+				'search_items'      => __( 'Search Organization Types', 'organizational' ),
+				'all_items'         => __( 'All Organization Types', 'organizational' ),
+				'parent_item'       => __( 'Parent Organization Type', 'organizational' ),
 				'parent_item_colon' => __( 'Parent Organization Type:', 'organizational' ),
-				'edit_item' => __( 'Edit Organization Type', 'organizational' ),
-				'update_item' => __( 'Update Organization Type', 'organizational' ),
-				'add_new_item' => __( 'Add New Organization Type', 'organizational' ),
-				'new_item_name' => __( 'New Organization Type Name', 'organizational' ),
-				'menu_name' => __( 'Organization Type', 'organizational' ),
+				'edit_item'         => __( 'Edit Organization Type', 'organizational' ),
+				'update_item'       => __( 'Update Organization Type', 'organizational' ),
+				'add_new_item'      => __( 'Add New Organization Type', 'organizational' ),
+				'new_item_name'     => __( 'New Organization Type Name', 'organizational' ),
+				'menu_name'         => __( 'Organization Type', 'organizational' ),
 			),
-			'hierarchical' => true,
-			'show_ui' => true,
+			'hierarchical'      => true,
+			'show_ui'           => true,
 			'show_admin_column' => true,
-			'query_var' => true,
-			'rewrite' => array(
+			'query_var'         => true,
+			'rewrite'           => array(
 				'slug' => 'entity-type',
 			),
 		);
@@ -638,24 +657,24 @@ class Organizational {
 		}
 
 		$args = array(
-			'labels' => array(
-				'name' => __( 'Topics', 'organizational' ),
-				'singular_name' => __( 'Topic', 'organizational' ),
-				'search_items' => __( 'Search Topics', 'organizational' ),
-				'all_items' => __( 'All Topics', 'organizational' ),
-				'parent_item' => __( 'Parent Topic', 'organizational' ),
+			'labels'            => array(
+				'name'              => __( 'Topics', 'organizational' ),
+				'singular_name'     => __( 'Topic', 'organizational' ),
+				'search_items'      => __( 'Search Topics', 'organizational' ),
+				'all_items'         => __( 'All Topics', 'organizational' ),
+				'parent_item'       => __( 'Parent Topic', 'organizational' ),
 				'parent_item_colon' => __( 'Parent Topic:', 'organizational' ),
-				'edit_item' => __( 'Edit Topic', 'organizational' ),
-				'update_item' => __( 'Update Topic', 'organizational' ),
-				'add_new_item' => __( 'Add New Topic', 'organizational' ),
-				'new_item_name' => __( 'New Topic Name', 'organizational' ),
-				'menu_name' => __( 'Topic', 'organizational' ),
+				'edit_item'         => __( 'Edit Topic', 'organizational' ),
+				'update_item'       => __( 'Update Topic', 'organizational' ),
+				'add_new_item'      => __( 'Add New Topic', 'organizational' ),
+				'new_item_name'     => __( 'New Topic Name', 'organizational' ),
+				'menu_name'         => __( 'Topic', 'organizational' ),
 			),
-			'hierarchical' => true,
-			'show_ui' => true,
+			'hierarchical'      => true,
+			'show_ui'           => true,
 			'show_admin_column' => true,
-			'query_var' => true,
-			'rewrite' => array(
+			'query_var'         => true,
+			'rewrite'           => array(
 				'slug' => 'topic',
 			),
 		);
@@ -822,10 +841,10 @@ class Organizational {
 		$current_object_ids = get_post_meta( $post->ID, '_' . $object_content_type . '_ids', true );
 
 		if ( $current_object_ids ) {
-			$added_object_ids = array_diff( $object_ids, $current_object_ids );
+			$added_object_ids   = array_diff( $object_ids, $current_object_ids );
 			$removed_object_ids = array_diff( $current_object_ids, $object_ids );
 		} else {
-			$added_object_ids = $object_ids;
+			$added_object_ids   = $object_ids;
 			$removed_object_ids = array();
 		}
 
@@ -833,7 +852,7 @@ class Organizational {
 
 		foreach ( $added_object_ids as $add_object ) {
 			$object_post_id = $all_objects[ $add_object ]['id'];
-			$objects = get_post_meta( $object_post_id, '_' . $post->post_type . '_ids', true );
+			$objects        = get_post_meta( $object_post_id, '_' . $post->post_type . '_ids', true );
 
 			if ( empty( $objects ) ) {
 				$objects = array();
@@ -851,7 +870,7 @@ class Organizational {
 			}
 
 			$object_post_id = $all_objects[ $remove_object ]['id'];
-			$objects = get_post_meta( $object_post_id, '_' . $post->post_type . '_ids', true );
+			$objects        = get_post_meta( $object_post_id, '_' . $post->post_type . '_ids', true );
 
 			if ( empty( $objects ) ) {
 				$objects = array();
@@ -915,7 +934,7 @@ class Organizational {
 	 */
 	public function display_assign_projects_meta_box( $post ) {
 		$current_projects = get_post_meta( $post->ID, '_' . $this->project_content_type . '_ids', true );
-		$all_projects = $this->get_all_object_data( $this->project_content_type );
+		$all_projects     = $this->get_all_object_data( $this->project_content_type );
 		$this->display_autocomplete_input( $all_projects, $current_projects, 'projects' );
 	}
 
@@ -926,7 +945,7 @@ class Organizational {
 	 */
 	public function display_assign_entities_meta_box( $post ) {
 		$current_entities = get_post_meta( $post->ID, '_' . $this->entity_content_type . '_ids', true );
-		$all_entities = $this->get_all_object_data( $this->entity_content_type );
+		$all_entities     = $this->get_all_object_data( $this->entity_content_type );
 		$this->display_autocomplete_input( $all_entities, $current_entities, 'entities' );
 	}
 
@@ -937,7 +956,7 @@ class Organizational {
 	 */
 	public function display_assign_people_meta_box( $post ) {
 		$current_people = get_post_meta( $post->ID, '_' . $this->people_content_type . '_ids', true );
-		$all_people = $this->get_all_object_data( $this->people_content_type );
+		$all_people     = $this->get_all_object_data( $this->people_content_type );
 		$this->display_autocomplete_input( $all_people, $current_people, 'people' );
 	}
 
@@ -948,7 +967,7 @@ class Organizational {
 	 */
 	public function display_assign_publications_meta_box( $post ) {
 		$current_publications = get_post_meta( $post->ID, '_' . $this->publication_content_type . '_ids', true );
-		$all_publications = $this->get_all_object_data( $this->publication_content_type );
+		$all_publications     = $this->get_all_object_data( $this->publication_content_type );
 		$this->display_autocomplete_input( $all_publications, $current_publications, 'publications' );
 	}
 
@@ -1006,7 +1025,7 @@ class Organizational {
 		// @codingStandardsIgnoreEnd
 
 		$current_objects_html = '';
-		$current_objects_ids = implode( ',', array_keys( $objects_to_display_clean ) );
+		$current_objects_ids  = implode( ',', array_keys( $objects_to_display_clean ) );
 		foreach ( $objects_to_display_clean as $key => $current_object ) {
 			$current_objects_html .= '<div class="added-' . esc_attr( $object_type ) . ' added-object" id="' . esc_attr( $key ) . '" data-name="' . esc_attr( $current_object['name'] ) . '">' . esc_html( $current_object['name'] ) . '<span class="organizational-object-close dashicons-no-alt"></span></div>';
 		}
@@ -1044,17 +1063,19 @@ class Organizational {
 			}
 
 			$all_object_data = array();
-			$all_data = get_posts( array(
-				'post_type' => $post_type,
-				'posts_per_page' => 1000,
-			) );
+			$all_data        = get_posts(
+				array(
+					'post_type'      => $post_type,
+					'posts_per_page' => 1000,
+				)
+			);
 
 			foreach ( $all_data as $data ) {
 				$unique_data_id = get_post_meta( $data->ID, '_organizational_unique_id', true );
 				if ( $unique_data_id ) {
-					$all_object_data[ $unique_data_id ]['id'] = $data->ID;
+					$all_object_data[ $unique_data_id ]['id']   = $data->ID;
 					$all_object_data[ $unique_data_id ]['name'] = $data->post_title;
-					$all_object_data[ $unique_data_id ]['url'] = esc_url_raw( get_permalink( $data->ID ) );
+					$all_object_data[ $unique_data_id ]['url']  = esc_url_raw( get_permalink( $data->ID ) );
 				}
 			}
 
@@ -1105,7 +1126,7 @@ class Organizational {
 			$base_object_type = $object_type;
 		}
 
-		$all_objects = $this->get_all_object_data( $base_object_type );
+		$all_objects        = $this->get_all_object_data( $base_object_type );
 		$associated_objects = get_post_meta( $post->ID, '_' . $object_type . '_ids', true );
 
 		if ( is_array( $associated_objects ) && ! empty( $associated_objects ) ) {
@@ -1158,7 +1179,7 @@ class Organizational {
 		$added_html = '';
 
 		if ( false !== $entities && ! empty( $entities ) ) {
-			$labels = get_post_type_object( $this->entity_content_type );
+			$labels      = get_post_type_object( $this->entity_content_type );
 			$added_html .= '<div class="organizational-entities"><h3>' . $labels->labels->name . '</h3><ul>';
 			foreach ( $entities as $entity ) {
 				$added_html .= '<li><a href="' . esc_url( $entity['url'] ) . '">' . esc_html( $entity['name'] ) . '</a></li>';
@@ -1169,7 +1190,7 @@ class Organizational {
 
 		$projects = apply_filters( 'organizational_projects_to_add_to_content', $projects, get_the_ID() );
 		if ( false !== $projects && ! empty( $projects ) ) {
-			$labels = get_post_type_object( $this->project_content_type );
+			$labels      = get_post_type_object( $this->project_content_type );
 			$added_html .= '<div class="organizational-projects"><h3>' . $labels->labels->name . '</h3><ul>';
 			foreach ( $projects as $project ) {
 				$added_html .= '<li><a href="' . esc_url( $project['url'] ) . '">' . esc_html( $project['name'] ) . '</a></li>';
@@ -1179,7 +1200,7 @@ class Organizational {
 
 		$people = apply_filters( 'organizational_people_to_add_to_content', $people, get_the_ID() );
 		if ( false !== $people && ! empty( $people ) ) {
-			$labels = get_post_type_object( $this->people_content_type );
+			$labels      = get_post_type_object( $this->people_content_type );
 			$added_html .= '<div class="organizational-people"><h3>' . $labels->labels->name . '</h3><ul>';
 			foreach ( $people as  $person ) {
 				$added_html .= '<li><a href="' . esc_url( $person['url'] ) . '">' . esc_html( $person['name'] ) . '</a></li>';
@@ -1188,7 +1209,7 @@ class Organizational {
 		}
 
 		if ( false !== $publications && ! empty( $publications ) ) {
-			$labels = get_post_type_object( $this->publication_content_type );
+			$labels      = get_post_type_object( $this->publication_content_type );
 			$added_html .= '<div class="organizational-publications"><h3>' . $labels->labels->name . '</h3><ul>';
 			foreach ( $publications as $publication ) {
 				$added_html .= '<li><a href="' . esc_url( $publication['url'] ) . '">' . esc_html( $publication['name'] ) . '</a></li>';
@@ -1244,10 +1265,12 @@ class Organizational {
 			return;
 		}
 
-		$posts = get_posts( array(
-			'post_type' => $type,
-			'name' => $slug,
-		) );
+		$posts = get_posts(
+			array(
+				'post_type' => $type,
+				'name'      => $slug,
+			)
+		);
 
 		if ( 0 === count( $posts ) ) {
 			$query->set( 'post__in', array( 0 ) );
