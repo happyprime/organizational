@@ -70,6 +70,8 @@ class Organizational {
 		add_action( 'init', array( $this, 'register_entity_type_taxonomy' ), 11 );
 		add_action( 'init', array( $this, 'register_topic_taxonomy' ), 11 );
 
+		add_filter( 'use_block_editor_for_post_type', array( $this, 'disable_block_editor' ), 20, 2 );
+
 		add_action( 'init', array( $this, 'process_upgrade_routine' ), 12 );
 
 		add_action( 'save_post', array( $this, 'assign_unique_id' ), 10, 2 );
@@ -111,6 +113,31 @@ class Organizational {
 		}
 
 		update_option( 'organizational_version', $this->plugin_version );
+	}
+
+	/**
+	 * Disable the block editor for these post types.
+	 *
+	 * @param bool   $uses_block_editor
+	 * @param string $post_type
+	 */
+	public function disable_block_editor( $uses_block_editor, $post_type ) {
+		if (
+			in_array(
+				$post_type,
+				array(
+					$this->project_content_type,
+					$this->people_content_type,
+					$this->entity_content_type,
+					$this->publication_content_type,
+				),
+				true
+			)
+		) {
+			return false;
+		}
+
+		return $uses_block_editor;
 	}
 
 	/**
