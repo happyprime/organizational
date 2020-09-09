@@ -892,8 +892,8 @@ class Organizational {
 	 * Enqueue the scripts and styles used in the admin interface.
 	 */
 	public function admin_enqueue_scripts() {
-		wp_enqueue_script( 'organizational-admin', plugins_url( 'js/admin.js', __FILE__ ), array( 'jquery-ui-autocomplete' ), false, true );
-		wp_enqueue_style( 'organizational-admin-style', plugins_url( 'css/admin-style.css', __FILE__ ) );
+		wp_enqueue_script( 'organizational-admin', plugins_url( 'js/admin.js', __FILE__ ), array( 'jquery-ui-autocomplete' ), $this->plugin_version, true );
+		wp_enqueue_style( 'organizational-admin-style', plugins_url( 'css/admin-style.css', __FILE__ ), array(), $this->plugin_version );
 	}
 
 	/**
