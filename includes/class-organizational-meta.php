@@ -330,17 +330,3 @@ class Organizational_Meta {
 		return $data;
 	}
 }
-$organizational_meta = new Organizational_Meta();
-
-/**
- * Provides a helper function for grabbing the meta data stored for people.
- *
- * @param int    $post_id ID of the person.
- * @param string $field   Friendly field name for the meta being requested.
- *
- * @return bool|mixed
- */
-function organizational_get_meta( $post_id, $field ) {
-	global $organizational_meta;
-	return $organizational_meta->get_meta( $post_id, $field );
-}
