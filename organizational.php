@@ -1066,7 +1066,7 @@ class Organizational {
 			$all_data        = get_posts(
 				array(
 					'post_type'      => $post_type,
-					'posts_per_page' => 1000,
+					'posts_per_page' => 1000, // phpcs:ignore WordPress.WP.PostsPerPage.posts_per_page_posts_per_page
 				)
 			);
 
