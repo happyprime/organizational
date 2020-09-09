@@ -330,7 +330,7 @@ class Organizational_Meta {
 		return $data;
 	}
 }
-$organizational = new Organizational_Meta();
+$organizational_meta = new Organizational_Meta();
 
 /**
  * Provides a helper function for grabbing the meta data stored for people.
@@ -341,6 +341,6 @@ $organizational = new Organizational_Meta();
  * @return bool|mixed
  */
 function organizational_get_meta( $post_id, $field ) {
-	global $organizational;
-	return $organizational->get_meta( $post_id, $field );
+	global $organizational_meta;
+	return $organizational_meta->get_meta( $post_id, $field );
 }
