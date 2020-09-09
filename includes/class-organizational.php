@@ -1,16 +1,4 @@
 <?php
-/*
-Plugin Name: Organizational
-Plugin URI: https://github.com/happyprime/organizational
-Description: Associate people, projects, organizations, and publications.
-Author: happyprime
-Version: 1.0.0
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
-*/
-
-// Include handling of meta for default content types.
-include_once __DIR__ . '/includes/organizational-meta.php';
 
 class Organizational {
 	/**
@@ -19,56 +7,56 @@ class Organizational {
 	 *
 	 * @var string
 	 */
-	var $plugin_version = '1.0.0';
+	public $plugin_version = '1.0.0';
 
 	/**
 	 * The slug used to register the project custom content type.
 	 *
 	 * @var string
 	 */
-	var $project_content_type = 'org_project';
+	public $project_content_type = 'org_project';
 
 	/**
 	 * The slug used to register the people custom content type.
 	 *
 	 * @var string
 	 */
-	var $people_content_type = 'org_person';
+	public $people_content_type = 'org_person';
 
 	/**
 	 * The slug used to register the publication custom content type.
 	 *
 	 * @var string
 	 */
-	var $publication_content_type = 'org_publication';
+	public $publication_content_type = 'org_publication';
 
 	/**
 	 * The slug used to register the entity custom content type.
 	 *
 	 * @var string
 	 */
-	var $entity_content_type = 'org_entity';
+	public $entity_content_type = 'org_entity';
 
 	/**
 	 * The slug used to register the entity type taxonomy.
 	 *
 	 * @var string
 	 */
-	var $entity_type_taxonomy = 'org_entity_type';
+	public $entity_type_taxonomy = 'org_entity_type';
 
 	/**
 	 * The slug used to register a taxonomy for center topics.
 	 *
 	 * @var string
 	 */
-	var $topics_taxonomy = 'org_topics';
+	public $topics_taxonomy = 'org_topics';
 
 	/**
 	 * Whether a nonce has been output for associated objects.
 	 *
 	 * @var bool
 	 */
-	var $nonce_output = false;
+	public $nonce_output = false;
 
 	/**
 	 * Setup the hooks used by the plugin.
@@ -81,6 +69,8 @@ class Organizational {
 		add_action( 'init', array( $this, 'register_entity_content_type' ), 11 );
 		add_action( 'init', array( $this, 'register_entity_type_taxonomy' ), 11 );
 		add_action( 'init', array( $this, 'register_topic_taxonomy' ), 11 );
+
+		add_filter( 'use_block_editor_for_post_type', array( $this, 'disable_block_editor' ), 20, 2 );
 
 		add_action( 'init', array( $this, 'process_upgrade_routine' ), 12 );
 
@@ -126,6 +116,31 @@ class Organizational {
 	}
 
 	/**
+	 * Disable the block editor for these post types.
+	 *
+	 * @param bool   $uses_block_editor
+	 * @param string $post_type
+	 */
+	public function disable_block_editor( $uses_block_editor, $post_type ) {
+		if (
+			in_array(
+				$post_type,
+				array(
+					$this->project_content_type,
+					$this->people_content_type,
+					$this->entity_content_type,
+					$this->publication_content_type,
+				),
+				true
+			)
+		) {
+			return false;
+		}
+
+		return $uses_block_editor;
+	}
+
+	/**
 	 * If a theme does not provide explicit support for one or more portions of this plugin
 	 * when the plugin is activated, we should assume that intent is to use all functionality.
 	 *
@@ -133,9 +148,9 @@ class Organizational {
 	 */
 	public function set_default_support() {
 		if ( false === current_theme_supports( 'organizational_project' ) &&
-			 false === current_theme_supports( 'organizational_person' ) &&
-			 false === current_theme_supports( 'organizational_entity' ) &&
-			 false === current_theme_supports( 'organizational_publication' ) ) {
+			false === current_theme_supports( 'organizational_person' ) &&
+			false === current_theme_supports( 'organizational_entity' ) &&
+			false === current_theme_supports( 'organizational_publication' ) ) {
 			add_theme_support( 'organizational_project' );
 			add_theme_support( 'organizational_person' );
 			add_theme_support( 'organizational_entity' );
@@ -148,9 +163,16 @@ class Organizational {
 	 */
 	public function display_settings() {
 		register_setting( 'general', 'organizational_names', array( $this, 'sanitize_names' ) );
-		add_settings_field( 'organizational-names', 'Organizational Names', array( $this, 'general_settings_names' ), 'general', 'default', array(
-			'label_for' => 'organizational_names',
-		) );
+		add_settings_field(
+			'organizational-names',
+			'Organizational Names',
+			array( $this, 'general_settings_names' ),
+			'general',
+			'default',
+			array(
+				'label_for' => 'organizational_names',
+			)
+		);
 	}
 
 	/**
@@ -168,7 +190,7 @@ class Organizational {
 			}
 
 			$clean_names[ $name ]['singular'] = sanitize_text_field( $data['singular'] );
-			$clean_names[ $name ]['plural'] = sanitize_text_field( $data['plural'] );
+			$clean_names[ $name ]['plural']   = sanitize_text_field( $data['plural'] );
 		}
 
 		wp_schedule_single_event( time() + 1, 'organizational_flush_rewrite_rules' );
@@ -203,22 +225,34 @@ class Organizational {
 			$names['publication'] = array();
 		}
 
-		$display_names['project'] = wp_parse_args( $names['project'], array(
-			'singular' => 'Project',
-			'plural' => 'Projects',
-		) );
-		$display_names['people'] = wp_parse_args( $names['people'], array(
-			'singular' => 'Person',
-			'plural' => 'People',
-		) );
-		$display_names['entity'] = wp_parse_args( $names['entity'], array(
-			'singular' => 'Entity',
-			'plural' => 'Entities',
-		) );
-		$display_names['publication'] = wp_parse_args( $names['publication'], array(
-			'singular' => 'Publication',
-			'plural' => 'Publications',
-		) );
+		$display_names['project']     = wp_parse_args(
+			$names['project'],
+			array(
+				'singular' => 'Project',
+				'plural'   => 'Projects',
+			)
+		);
+		$display_names['people']      = wp_parse_args(
+			$names['people'],
+			array(
+				'singular' => 'Person',
+				'plural'   => 'People',
+			)
+		);
+		$display_names['entity']      = wp_parse_args(
+			$names['entity'],
+			array(
+				'singular' => 'Entity',
+				'plural'   => 'Entities',
+			)
+		);
+		$display_names['publication'] = wp_parse_args(
+			$names['publication'],
+			array(
+				'singular' => 'Publication',
+				'plural'   => 'Publications',
+			)
+		);
 		?>
 		<div class="organizational-settings-names">
 			<p>Changing the settings here will override the default labels for the content types provided by the Organizational plugin. The default labels are listed to the left of each field. The <strong>singular</strong> label will also be used as a slug in URLs.</p>
@@ -253,7 +287,7 @@ class Organizational {
 	 *
 	 * @return array List of labels.
 	 */
-	private function _build_labels( $names ) {
+	private function build_labels( $names ) {
 		$labels = array(
 			'name'               => $names['plural'],
 			'singular_name'      => $names['singular'],
@@ -276,7 +310,7 @@ class Organizational {
 	 *
 	 * @return string
 	 */
-	private function _build_description( $plural ) {
+	private function build_description( $plural ) {
 		return esc_html( $plural ) . ' belonging to the center';
 	}
 
@@ -287,7 +321,7 @@ class Organizational {
 	 *
 	 * @return array|bool A list of singular and plural names. False if not available.
 	 */
-	private function _get_object_type_names( $object_type ) {
+	private function get_object_type_names( $object_type ) {
 		$names = get_option( 'organizational_names', false );
 
 		// If an option is not provided, do not provide names.
@@ -302,7 +336,7 @@ class Organizational {
 
 		return array(
 			'singular' => esc_html( $names[ $object_type ]['singular'] ),
-			'plural' => esc_html( $names[ $object_type ]['plural'] ),
+			'plural'   => esc_html( $names[ $object_type ]['plural'] ),
 		);
 	}
 
@@ -321,7 +355,7 @@ class Organizational {
 			return;
 		}
 
-		$default_labels = array(
+		$default_labels      = array(
 			'name'               => __( 'Projects', 'organizational' ),
 			'singular_name'      => __( 'Project', 'organizational' ),
 			'all_items'          => __( 'All Projects', 'organizational' ),
@@ -334,42 +368,42 @@ class Organizational {
 			'not_found_in_trash' => __( 'No Projects found in trash', 'organizational' ),
 		);
 		$default_description = __( 'Projects belonging to the center.', 'organizational' );
-		$default_slug = 'project';
+		$default_slug        = 'project';
 
-		$names = $this->_get_object_type_names( 'project' );
+		$names = $this->get_object_type_names( 'project' );
 		$names = apply_filters( 'organizational_project_type_names', $names );
 
 		if ( false !== $names && isset( $names['singular'] ) && isset( $names['plural'] ) ) {
-			$labels = $this->_build_labels( $names );
-			$description = $this->_build_description( $names['plural'] );
-			$slug = sanitize_title( strtolower( $names['singular'] ) );
+			$labels      = $this->build_labels( $names );
+			$description = $this->build_description( $names['plural'] );
+			$slug        = sanitize_title( strtolower( $names['singular'] ) );
 		} else {
-			$labels = $default_labels;
+			$labels      = $default_labels;
 			$description = $default_description;
-			$slug = $default_slug;
+			$slug        = $default_slug;
 		}
 
 		$args = array(
-			'labels' => $labels,
-			'description' => $description,
-			'public' => true,
+			'labels'       => $labels,
+			'description'  => $description,
+			'public'       => true,
 			'hierarchical' => false,
-			'menu_icon' => 'dashicons-analytics',
-			'supports' => array(
+			'menu_icon'    => 'dashicons-analytics',
+			'supports'     => array(
 				'title',
 				'editor',
 				'revisions',
 				'thumbnail',
 				'excerpt',
 			),
-			'taxonomies' => array( 'category', 'post_tag' ),
-			'has_archive' => true,
-			'rewrite' => array(
-				'slug' => $slug,
+			'taxonomies'   => array( 'category', 'post_tag' ),
+			'has_archive'  => true,
+			'rewrite'      => array(
+				'slug'       => $slug,
 				'with_front' => false,
 			),
 			'show_in_rest' => true,
-			'rest_base' => 'projects', // Note that this can be different from the post type slug.
+			'rest_base'    => 'projects', // Note that this can be different from the post type slug.
 		);
 
 		register_post_type( $this->project_content_type, $args );
@@ -390,7 +424,7 @@ class Organizational {
 			return;
 		}
 
-		$default_labels = array(
+		$default_labels      = array(
 			'name'               => __( 'People', 'organizational' ),
 			'singular_name'      => __( 'Person', 'organizational' ),
 			'all_items'          => __( 'All People', 'organizational' ),
@@ -403,28 +437,28 @@ class Organizational {
 			'not_found_in_trash' => __( 'No People found in trash', 'organizational' ),
 		);
 		$default_description = __( 'People involved with the center.', 'organizational' );
-		$default_slug = 'people';
+		$default_slug        = 'people';
 
-		$names = $this->_get_object_type_names( 'people' );
+		$names = $this->get_object_type_names( 'people' );
 		$names = apply_filters( 'organizational_people_type_names', $names );
 
 		if ( false !== $names && isset( $names['singular'] ) && isset( $names['plural'] ) ) {
-			$labels = $this->_build_labels( $names );
-			$description = $this->_build_description( $names['plural'] );
-			$slug = sanitize_title( strtolower( $names['singular'] ) );
+			$labels      = $this->build_labels( $names );
+			$description = $this->build_description( $names['plural'] );
+			$slug        = sanitize_title( strtolower( $names['singular'] ) );
 		} else {
-			$labels = $default_labels;
+			$labels      = $default_labels;
 			$description = $default_description;
-			$slug = $default_slug;
+			$slug        = $default_slug;
 		}
 
 		$args = array(
-			'labels' => $labels,
-			'description' => $description,
-			'public' => true,
+			'labels'       => $labels,
+			'description'  => $description,
+			'public'       => true,
 			'hierarchical' => false,
-			'menu_icon' => 'dashicons-id-alt',
-			'supports' => array(
+			'menu_icon'    => 'dashicons-id-alt',
+			'supports'     => array(
 				'title',
 				'author',
 				'editor',
@@ -432,14 +466,14 @@ class Organizational {
 				'thumbnail',
 				'excerpt',
 			),
-			'taxonomies' => array( 'category', 'post_tag' ),
-			'has_archive' => true,
-			'rewrite' => array(
-				'slug' => $slug,
+			'taxonomies'   => array( 'category', 'post_tag' ),
+			'has_archive'  => true,
+			'rewrite'      => array(
+				'slug'       => $slug,
 				'with_front' => false,
 			),
 			'show_in_rest' => true,
-			'rest_base' => 'people',
+			'rest_base'    => 'people',
 		);
 
 		register_post_type( $this->people_content_type, $args );
@@ -460,7 +494,7 @@ class Organizational {
 			return;
 		}
 
-		$default_labels = array(
+		$default_labels      = array(
 			'name'               => __( 'Publications', 'organizational' ),
 			'singular_name'      => __( 'Publications', 'organizational' ),
 			'all_items'          => __( 'All Publications', 'organizational' ),
@@ -473,42 +507,42 @@ class Organizational {
 			'not_found_in_trash' => __( 'No Publications found in trash', 'organizational' ),
 		);
 		$default_description = __( 'Publications involved with the center.', 'organizational' );
-		$default_slug = 'publication';
+		$default_slug        = 'publication';
 
-		$names = $this->_get_object_type_names( 'publication' );
+		$names = $this->get_object_type_names( 'publication' );
 		$names = apply_filters( 'organizational_publication_type_names', $names );
 
 		if ( false !== $names && isset( $names['singular'] ) && isset( $names['plural'] ) ) {
-			$labels = $this->_build_labels( $names );
-			$description = $this->_build_description( $names['plural'] );
-			$slug = sanitize_title( strtolower( $names['singular'] ) );
+			$labels      = $this->build_labels( $names );
+			$description = $this->build_description( $names['plural'] );
+			$slug        = sanitize_title( strtolower( $names['singular'] ) );
 		} else {
-			$labels = $default_labels;
+			$labels      = $default_labels;
 			$description = $default_description;
-			$slug = $default_slug;
+			$slug        = $default_slug;
 		}
 
 		$args = array(
-			'labels' => $labels,
-			'description' => $description,
-			'public' => true,
+			'labels'       => $labels,
+			'description'  => $description,
+			'public'       => true,
 			'hierarchical' => false,
-			'menu_icon' => 'dashicons-book',
-			'supports' => array(
+			'menu_icon'    => 'dashicons-book',
+			'supports'     => array(
 				'title',
 				'editor',
 				'revisions',
 				'thumbnail',
 				'excerpt',
 			),
-			'taxonomies' => array( 'category', 'post_tag' ),
-			'has_archive' => true,
-			'rewrite' => array(
-				'slug' => $slug,
+			'taxonomies'   => array( 'category', 'post_tag' ),
+			'has_archive'  => true,
+			'rewrite'      => array(
+				'slug'       => $slug,
 				'with_front' => false,
 			),
 			'show_in_rest' => true,
-			'rest_base' => 'publications',
+			'rest_base'    => 'publications',
 		);
 
 		register_post_type( $this->publication_content_type, $args );
@@ -529,55 +563,55 @@ class Organizational {
 			return;
 		}
 
-		$default_labels = array(
-			'name' => __( 'Organizations', 'organizational' ),
-			'singular_name' => __( 'Organization', 'organizational' ),
-			'all_items' => __( 'All Organizations', 'organizational' ),
-			'add_new_item' => __( 'Add Organization', 'organizational' ),
-			'edit_item' => __( 'Edit Organization', 'organizational' ),
-			'new_item' => __( 'New Organization', 'organizational' ),
-			'view_item' => __( 'View Organization', 'organizational' ),
-			'search_items' => __( 'Search Organizations', 'organizational' ),
-			'not_found' => __( 'No Organizations found', 'organizational' ),
+		$default_labels      = array(
+			'name'               => __( 'Organizations', 'organizational' ),
+			'singular_name'      => __( 'Organization', 'organizational' ),
+			'all_items'          => __( 'All Organizations', 'organizational' ),
+			'add_new_item'       => __( 'Add Organization', 'organizational' ),
+			'edit_item'          => __( 'Edit Organization', 'organizational' ),
+			'new_item'           => __( 'New Organization', 'organizational' ),
+			'view_item'          => __( 'View Organization', 'organizational' ),
+			'search_items'       => __( 'Search Organizations', 'organizational' ),
+			'not_found'          => __( 'No Organizations found', 'organizational' ),
 			'not_found_in_trash' => __( 'No Organizations found in trash', 'organizational' ),
 		);
 		$default_description = __( 'Organizations involved with the center.', 'organizational' );
-		$default_slug = 'entity';
+		$default_slug        = 'entity';
 
-		$names = $this->_get_object_type_names( 'entity' );
+		$names = $this->get_object_type_names( 'entity' );
 		$names = apply_filters( 'organizational_entity_type_names', $names );
 
 		if ( false !== $names && isset( $names['singular'] ) && isset( $names['plural'] ) ) {
-			$labels = $this->_build_labels( $names );
-			$description = $this->_build_description( $names['plural'] );
-			$slug = sanitize_title( strtolower( $names['singular'] ) );
+			$labels      = $this->build_labels( $names );
+			$description = $this->build_description( $names['plural'] );
+			$slug        = sanitize_title( strtolower( $names['singular'] ) );
 		} else {
-			$labels = $default_labels;
+			$labels      = $default_labels;
 			$description = $default_description;
-			$slug = $default_slug;
+			$slug        = $default_slug;
 		}
 
 		$args = array(
-			'labels' => $labels,
-			'description' => $description,
-			'public' => true,
+			'labels'       => $labels,
+			'description'  => $description,
+			'public'       => true,
 			'hierarchical' => false,
-			'menu_icon' => 'dashicons-groups',
-			'supports' => array(
+			'menu_icon'    => 'dashicons-groups',
+			'supports'     => array(
 				'title',
 				'editor',
 				'revisions',
 				'thumbnail',
 				'excerpt',
 			),
-			'taxonomies' => array( 'category', 'post_tag' ),
-			'has_archive' => true,
-			'rewrite' => array(
-				'slug' => $slug,
+			'taxonomies'   => array( 'category', 'post_tag' ),
+			'has_archive'  => true,
+			'rewrite'      => array(
+				'slug'       => $slug,
 				'with_front' => false,
 			),
 			'show_in_rest' => true,
-			'rest_base' => 'organizations',
+			'rest_base'    => 'organizations',
 		);
 
 		register_post_type( $this->entity_content_type, $args );
@@ -597,24 +631,24 @@ class Organizational {
 		}
 
 		$args = array(
-			'labels' => array(
-				'name' => __( 'Organization Types', 'organizational' ),
-				'singular_name' => __( 'Organization Type', 'organizational' ),
-				'search_items' => __( 'Search Organization Types', 'organizational' ),
-				'all_items' => __( 'All Organization Types', 'organizational' ),
-				'parent_item' => __( 'Parent Organization Type', 'organizational' ),
+			'labels'            => array(
+				'name'              => __( 'Organization Types', 'organizational' ),
+				'singular_name'     => __( 'Organization Type', 'organizational' ),
+				'search_items'      => __( 'Search Organization Types', 'organizational' ),
+				'all_items'         => __( 'All Organization Types', 'organizational' ),
+				'parent_item'       => __( 'Parent Organization Type', 'organizational' ),
 				'parent_item_colon' => __( 'Parent Organization Type:', 'organizational' ),
-				'edit_item' => __( 'Edit Organization Type', 'organizational' ),
-				'update_item' => __( 'Update Organization Type', 'organizational' ),
-				'add_new_item' => __( 'Add New Organization Type', 'organizational' ),
-				'new_item_name' => __( 'New Organization Type Name', 'organizational' ),
-				'menu_name' => __( 'Organization Type', 'organizational' ),
+				'edit_item'         => __( 'Edit Organization Type', 'organizational' ),
+				'update_item'       => __( 'Update Organization Type', 'organizational' ),
+				'add_new_item'      => __( 'Add New Organization Type', 'organizational' ),
+				'new_item_name'     => __( 'New Organization Type Name', 'organizational' ),
+				'menu_name'         => __( 'Organization Type', 'organizational' ),
 			),
-			'hierarchical' => true,
-			'show_ui' => true,
+			'hierarchical'      => true,
+			'show_ui'           => true,
 			'show_admin_column' => true,
-			'query_var' => true,
-			'rewrite' => array(
+			'query_var'         => true,
+			'rewrite'           => array(
 				'slug' => 'entity-type',
 			),
 		);
@@ -638,24 +672,24 @@ class Organizational {
 		}
 
 		$args = array(
-			'labels' => array(
-				'name' => __( 'Topics', 'organizational' ),
-				'singular_name' => __( 'Topic', 'organizational' ),
-				'search_items' => __( 'Search Topics', 'organizational' ),
-				'all_items' => __( 'All Topics', 'organizational' ),
-				'parent_item' => __( 'Parent Topic', 'organizational' ),
+			'labels'            => array(
+				'name'              => __( 'Topics', 'organizational' ),
+				'singular_name'     => __( 'Topic', 'organizational' ),
+				'search_items'      => __( 'Search Topics', 'organizational' ),
+				'all_items'         => __( 'All Topics', 'organizational' ),
+				'parent_item'       => __( 'Parent Topic', 'organizational' ),
 				'parent_item_colon' => __( 'Parent Topic:', 'organizational' ),
-				'edit_item' => __( 'Edit Topic', 'organizational' ),
-				'update_item' => __( 'Update Topic', 'organizational' ),
-				'add_new_item' => __( 'Add New Topic', 'organizational' ),
-				'new_item_name' => __( 'New Topic Name', 'organizational' ),
-				'menu_name' => __( 'Topic', 'organizational' ),
+				'edit_item'         => __( 'Edit Topic', 'organizational' ),
+				'update_item'       => __( 'Update Topic', 'organizational' ),
+				'add_new_item'      => __( 'Add New Topic', 'organizational' ),
+				'new_item_name'     => __( 'New Topic Name', 'organizational' ),
+				'menu_name'         => __( 'Topic', 'organizational' ),
 			),
-			'hierarchical' => true,
-			'show_ui' => true,
+			'hierarchical'      => true,
+			'show_ui'           => true,
 			'show_admin_column' => true,
-			'query_var' => true,
-			'rewrite' => array(
+			'query_var'         => true,
+			'rewrite'           => array(
 				'slug' => 'topic',
 			),
 		);
@@ -696,7 +730,7 @@ class Organizational {
 			update_post_meta( $post_id, '_organizational_unique_id', $unique_id );
 		}
 
-		$this->_flush_all_object_data_cache( $post->post_type );
+		$this->flush_all_object_cache( $post->post_type );
 	}
 
 	/**
@@ -735,43 +769,43 @@ class Organizational {
 			$people_ids = explode( ',', $_POST['assign_people_ids'] );
 			$people_ids = $this->clean_posted_ids( $people_ids );
 
-			$this->_maintain_object_association( $people_ids, $this->people_content_type, $post, $post_unique_id );
+			$this->maintain_object_association( $people_ids, $this->people_content_type, $post, $post_unique_id );
 
 			update_post_meta( $post_id, '_' . $this->people_content_type . '_ids', $people_ids );
-			$this->_flush_all_object_data_cache( $this->people_content_type );
+			$this->flush_all_object_cache( $this->people_content_type );
 		}
 
 		if ( isset( $_POST['assign_projects_ids'] ) ) {
 			$projects_ids = explode( ',', $_POST['assign_projects_ids'] );
 			$projects_ids = $this->clean_posted_ids( $projects_ids );
 
-			$this->_maintain_object_association( $projects_ids, $this->project_content_type, $post, $post_unique_id );
+			$this->maintain_object_association( $projects_ids, $this->project_content_type, $post, $post_unique_id );
 
 			update_post_meta( $post_id, '_' . $this->project_content_type . '_ids', $projects_ids );
-			$this->_flush_all_object_data_cache( $this->project_content_type );
+			$this->flush_all_object_cache( $this->project_content_type );
 		}
 
 		if ( isset( $_POST['assign_entities_ids'] ) ) {
 			$entities_ids = explode( ',', $_POST['assign_entities_ids'] );
 			$entities_ids = $this->clean_posted_ids( $entities_ids );
 
-			$this->_maintain_object_association( $entities_ids, $this->entity_content_type, $post, $post_unique_id );
+			$this->maintain_object_association( $entities_ids, $this->entity_content_type, $post, $post_unique_id );
 
 			update_post_meta( $post_id, '_' . $this->entity_content_type . '_ids', $entities_ids );
-			$this->_flush_all_object_data_cache( $this->entity_content_type );
+			$this->flush_all_object_cache( $this->entity_content_type );
 		}
 
 		if ( isset( $_POST['assign_publications_ids'] ) ) {
 			$publications_ids = explode( ',', $_POST['assign_publications_ids'] );
 			$publications_ids = $this->clean_posted_ids( $publications_ids );
 
-			$this->_maintain_object_association( $publications_ids, $this->publication_content_type, $post, $post_unique_id );
+			$this->maintain_object_association( $publications_ids, $this->publication_content_type, $post, $post_unique_id );
 
 			update_post_meta( $post_id, '_' . $this->publication_content_type . '_ids', $publications_ids );
-			$this->_flush_all_object_data_cache( $this->publication_content_type );
+			$this->flush_all_object_cache( $this->publication_content_type );
 		}
 
-		$this->_flush_all_object_data_cache( $post->post_type );
+		$this->flush_all_object_cache( $post->post_type );
 	}
 
 	/**
@@ -814,7 +848,7 @@ class Organizational {
 	 * @param $post
 	 * @param $post_unique_id
 	 */
-	private function _maintain_object_association( $object_ids, $object_content_type, $post, $post_unique_id ) {
+	private function maintain_object_association( $object_ids, $object_content_type, $post, $post_unique_id ) {
 		if ( empty( $object_ids ) ) {
 			$object_ids = array();
 		}
@@ -822,10 +856,10 @@ class Organizational {
 		$current_object_ids = get_post_meta( $post->ID, '_' . $object_content_type . '_ids', true );
 
 		if ( $current_object_ids ) {
-			$added_object_ids = array_diff( $object_ids, $current_object_ids );
+			$added_object_ids   = array_diff( $object_ids, $current_object_ids );
 			$removed_object_ids = array_diff( $current_object_ids, $object_ids );
 		} else {
-			$added_object_ids = $object_ids;
+			$added_object_ids   = $object_ids;
 			$removed_object_ids = array();
 		}
 
@@ -833,7 +867,7 @@ class Organizational {
 
 		foreach ( $added_object_ids as $add_object ) {
 			$object_post_id = $all_objects[ $add_object ]['id'];
-			$objects = get_post_meta( $object_post_id, '_' . $post->post_type . '_ids', true );
+			$objects        = get_post_meta( $object_post_id, '_' . $post->post_type . '_ids', true );
 
 			if ( empty( $objects ) ) {
 				$objects = array();
@@ -851,7 +885,7 @@ class Organizational {
 			}
 
 			$object_post_id = $all_objects[ $remove_object ]['id'];
-			$objects = get_post_meta( $object_post_id, '_' . $post->post_type . '_ids', true );
+			$objects        = get_post_meta( $object_post_id, '_' . $post->post_type . '_ids', true );
 
 			if ( empty( $objects ) ) {
 				$objects = array();
@@ -873,8 +907,8 @@ class Organizational {
 	 * Enqueue the scripts and styles used in the admin interface.
 	 */
 	public function admin_enqueue_scripts() {
-		wp_enqueue_script( 'organizational-admin', plugins_url( 'js/admin.js', __FILE__ ), array( 'jquery-ui-autocomplete' ), false, true );
-		wp_enqueue_style( 'organizational-admin-style', plugins_url( 'css/admin-style.css', __FILE__ ) );
+		wp_enqueue_script( 'organizational-admin', plugins_url( 'js/admin.js', dirname( __FILE__ ) ), array( 'jquery-ui-autocomplete' ), $this->plugin_version, true );
+		wp_enqueue_style( 'organizational-admin-style', plugins_url( 'css/admin-style.css', dirname( __FILE__ ) ), array(), $this->plugin_version );
 	}
 
 	/**
@@ -915,7 +949,7 @@ class Organizational {
 	 */
 	public function display_assign_projects_meta_box( $post ) {
 		$current_projects = get_post_meta( $post->ID, '_' . $this->project_content_type . '_ids', true );
-		$all_projects = $this->get_all_object_data( $this->project_content_type );
+		$all_projects     = $this->get_all_object_data( $this->project_content_type );
 		$this->display_autocomplete_input( $all_projects, $current_projects, 'projects' );
 	}
 
@@ -926,7 +960,7 @@ class Organizational {
 	 */
 	public function display_assign_entities_meta_box( $post ) {
 		$current_entities = get_post_meta( $post->ID, '_' . $this->entity_content_type . '_ids', true );
-		$all_entities = $this->get_all_object_data( $this->entity_content_type );
+		$all_entities     = $this->get_all_object_data( $this->entity_content_type );
 		$this->display_autocomplete_input( $all_entities, $current_entities, 'entities' );
 	}
 
@@ -937,7 +971,7 @@ class Organizational {
 	 */
 	public function display_assign_people_meta_box( $post ) {
 		$current_people = get_post_meta( $post->ID, '_' . $this->people_content_type . '_ids', true );
-		$all_people = $this->get_all_object_data( $this->people_content_type );
+		$all_people     = $this->get_all_object_data( $this->people_content_type );
 		$this->display_autocomplete_input( $all_people, $current_people, 'people' );
 	}
 
@@ -948,7 +982,7 @@ class Organizational {
 	 */
 	public function display_assign_publications_meta_box( $post ) {
 		$current_publications = get_post_meta( $post->ID, '_' . $this->publication_content_type . '_ids', true );
-		$all_publications = $this->get_all_object_data( $this->publication_content_type );
+		$all_publications     = $this->get_all_object_data( $this->publication_content_type );
 		$this->display_autocomplete_input( $all_publications, $current_publications, 'publications' );
 	}
 
@@ -1006,7 +1040,7 @@ class Organizational {
 		// @codingStandardsIgnoreEnd
 
 		$current_objects_html = '';
-		$current_objects_ids = implode( ',', array_keys( $objects_to_display_clean ) );
+		$current_objects_ids  = implode( ',', array_keys( $objects_to_display_clean ) );
 		foreach ( $objects_to_display_clean as $key => $current_object ) {
 			$current_objects_html .= '<div class="added-' . esc_attr( $object_type ) . ' added-object" id="' . esc_attr( $key ) . '" data-name="' . esc_attr( $current_object['name'] ) . '">' . esc_html( $current_object['name'] ) . '<span class="organizational-object-close dashicons-no-alt"></span></div>';
 		}
@@ -1044,17 +1078,19 @@ class Organizational {
 			}
 
 			$all_object_data = array();
-			$all_data = get_posts( array(
-				'post_type' => $post_type,
-				'posts_per_page' => 1000,
-			) );
+			$all_data        = get_posts(
+				array(
+					'post_type'      => $post_type,
+					'posts_per_page' => 1000, // phpcs:ignore WordPress.WP.PostsPerPage.posts_per_page_posts_per_page
+				)
+			);
 
 			foreach ( $all_data as $data ) {
 				$unique_data_id = get_post_meta( $data->ID, '_organizational_unique_id', true );
 				if ( $unique_data_id ) {
-					$all_object_data[ $unique_data_id ]['id'] = $data->ID;
+					$all_object_data[ $unique_data_id ]['id']   = $data->ID;
 					$all_object_data[ $unique_data_id ]['name'] = $data->post_title;
-					$all_object_data[ $unique_data_id ]['url'] = esc_url_raw( get_permalink( $data->ID ) );
+					$all_object_data[ $unique_data_id ]['url']  = esc_url_raw( get_permalink( $data->ID ) );
 				}
 			}
 
@@ -1072,7 +1108,7 @@ class Organizational {
 	 *
 	 * @param string $post_type Slug for the post type being saved.
 	 */
-	private function _flush_all_object_data_cache( $post_type ) {
+	private function flush_all_object_cache( $post_type ) {
 		wp_cache_delete( 'organizational_all_' . $post_type );
 		$this->get_all_object_data( $post_type );
 	}
@@ -1105,7 +1141,7 @@ class Organizational {
 			$base_object_type = $object_type;
 		}
 
-		$all_objects = $this->get_all_object_data( $base_object_type );
+		$all_objects        = $this->get_all_object_data( $base_object_type );
 		$associated_objects = get_post_meta( $post->ID, '_' . $object_type . '_ids', true );
 
 		if ( is_array( $associated_objects ) && ! empty( $associated_objects ) ) {
@@ -1158,7 +1194,7 @@ class Organizational {
 		$added_html = '';
 
 		if ( false !== $entities && ! empty( $entities ) ) {
-			$labels = get_post_type_object( $this->entity_content_type );
+			$labels      = get_post_type_object( $this->entity_content_type );
 			$added_html .= '<div class="organizational-entities"><h3>' . $labels->labels->name . '</h3><ul>';
 			foreach ( $entities as $entity ) {
 				$added_html .= '<li><a href="' . esc_url( $entity['url'] ) . '">' . esc_html( $entity['name'] ) . '</a></li>';
@@ -1169,7 +1205,7 @@ class Organizational {
 
 		$projects = apply_filters( 'organizational_projects_to_add_to_content', $projects, get_the_ID() );
 		if ( false !== $projects && ! empty( $projects ) ) {
-			$labels = get_post_type_object( $this->project_content_type );
+			$labels      = get_post_type_object( $this->project_content_type );
 			$added_html .= '<div class="organizational-projects"><h3>' . $labels->labels->name . '</h3><ul>';
 			foreach ( $projects as $project ) {
 				$added_html .= '<li><a href="' . esc_url( $project['url'] ) . '">' . esc_html( $project['name'] ) . '</a></li>';
@@ -1179,7 +1215,7 @@ class Organizational {
 
 		$people = apply_filters( 'organizational_people_to_add_to_content', $people, get_the_ID() );
 		if ( false !== $people && ! empty( $people ) ) {
-			$labels = get_post_type_object( $this->people_content_type );
+			$labels      = get_post_type_object( $this->people_content_type );
 			$added_html .= '<div class="organizational-people"><h3>' . $labels->labels->name . '</h3><ul>';
 			foreach ( $people as  $person ) {
 				$added_html .= '<li><a href="' . esc_url( $person['url'] ) . '">' . esc_html( $person['name'] ) . '</a></li>';
@@ -1188,7 +1224,7 @@ class Organizational {
 		}
 
 		if ( false !== $publications && ! empty( $publications ) ) {
-			$labels = get_post_type_object( $this->publication_content_type );
+			$labels      = get_post_type_object( $this->publication_content_type );
 			$added_html .= '<div class="organizational-publications"><h3>' . $labels->labels->name . '</h3><ul>';
 			foreach ( $publications as $publication ) {
 				$added_html .= '<li><a href="' . esc_url( $publication['url'] ) . '">' . esc_html( $publication['name'] ) . '</a></li>';
@@ -1244,10 +1280,12 @@ class Organizational {
 			return;
 		}
 
-		$posts = get_posts( array(
-			'post_type' => $type,
-			'name' => $slug,
-		) );
+		$posts = get_posts(
+			array(
+				'post_type' => $type,
+				'name'      => $slug,
+			)
+		);
 
 		if ( 0 === count( $posts ) ) {
 			$query->set( 'post__in', array( 0 ) );
@@ -1307,136 +1345,4 @@ class Organizational {
 			$query->set( 'order', 'ASC' );
 		}
 	}
-}
-global $organizational;
-$organizational = new Organizational();
-
-/**
- * Return the content type slug for the object type being queried.
- *
- * @param string $content_type Should be one of people, publication, entity, or project.
- *
- * @return string
- */
-function organizational_get_object_type_slug( $content_type ) {
-	global $organizational;
-
-	if ( 'people' === $content_type ) {
-		return $organizational->people_content_type;
-	}
-
-	if ( 'publication' === $content_type ) {
-		return $organizational->publication_content_type;
-	}
-
-	if ( 'entity' === $content_type ) {
-		return $organizational->entity_content_type;
-	}
-
-	if ( 'project' === $content_type ) {
-		return $organizational->project_content_type;
-	}
-
-	return '';
-}
-
-/**
- * Retrieve a list of content type slugs for registered content types by this plugin.
- *
- * @return array
- */
-function organizational_get_object_type_slugs() {
-	global $organizational;
-	return $organizational->get_object_type_slugs();
-}
-
-/**
- * Retrieve all of the items from a specified content type with their unique ID,
- * current post ID, and name.
- *
- * @param string $object_type The custom post type slug.
- *
- * @return array|bool Array of results or false if incorrectly called.
- */
-function organizational_get_all_object_data( $object_type ) {
-	global $organizational;
-	return $organizational->get_all_object_data( $object_type );
-}
-
-/**
- * Clean posted object ID data so that any IDs passed are sanitized and validated as not empty.
- *
- * @param array  $object_ids    List of object IDs being associated.
- * @param string $strip_from_id Text to strip from an object's ID.
- *
- * @return array Cleaned list of object IDs.
- */
-function organizational_clean_post_ids( $object_ids, $strip_from_id = '' ) {
-	global $organizational;
-	return $organizational->clean_posted_ids( $object_ids, $strip_from_id );
-}
-
-/**
- * Retrieve the list of projects associated with an object.
- *
- * @param int $post_id
- *
- * @return array
- */
-function organizational_get_object_projects( $post_id = 0 ) {
-	global $organizational;
-	return $organizational->get_object_objects( $post_id, $organizational->project_content_type );
-}
-
-/**
- * Retrieve the list of people associated with an object.
- *
- * @param int $post_id
- *
- * @return array
- */
-function organizational_get_object_people( $post_id = 0 ) {
-	global $organizational;
-	return $organizational->get_object_objects( $post_id, $organizational->people_content_type );
-}
-
-/**
- * Retrieve the list of entities associated with an object.
- *
- * @param int $post_id
- *
- * @return array
- */
-function organizational_get_object_entities( $post_id = 0 ) {
-	global $organizational;
-	return $organizational->get_object_objects( $post_id, $organizational->entity_content_type );
-}
-
-/**
- * Retrieve the list of publications associated with an object.
- *
- * @param int $post_id
- *
- * @return array
- */
-function organizational_get_object_publications( $post_id = 0 ) {
-	global $organizational;
-	return $organizational->get_object_objects( $post_id, $organizational->publication_content_type );
-}
-
-/**
- * Wrapper method to retrieve a list of objects from an object type associated with the requested object.
- *
- * @param int         $post_id          ID of the object currently being used.
- * @param string      $object_type      Slug of the object type to find.
- * @param bool|string $base_object_type Slug of the object type to use as the base of this
- *                                      query to support additional fabricated object types.
- *                                      False if base object type should inherit the passed
- *                                      object_type parameter.
- *
- * @return array List of objects associated with the requested object.
- */
-function organizational_get_object_objects( $post_id, $object_type, $base_object_type = false ) {
-	global $organizational;
-	return $organizational->get_object_objects( $post_id, $object_type, $base_object_type );
 }

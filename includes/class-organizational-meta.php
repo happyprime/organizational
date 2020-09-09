@@ -26,7 +26,7 @@ class Organizational_Meta {
 		}
 
 		if ( organizational_get_object_type_slug( 'project' ) === $post_type && true === apply_filters( 'organizational_display_project_information_metabox', true ) ) {
-			add_meta_box( 'organizational_project_info', 'Information', array( $this, 'display_project_information_meta_box' ) , null, 'normal', 'default' );
+			add_meta_box( 'organizational_project_info', 'Information', array( $this, 'display_project_information_meta_box' ), null, 'normal', 'default' );
 		}
 	}
 
@@ -87,15 +87,15 @@ class Organizational_Meta {
 	 * @param WP_Post $post
 	 */
 	public function display_person_information_meta_box( $post ) {
-		$person_prefix = get_post_meta( $post->ID, '_organizational_person_prefix', true );
-		$person_first_name = get_post_meta( $post->ID, '_organizational_person_first_name', true );
-		$person_last_name = get_post_meta( $post->ID, '_organizational_person_last_name', true );
-		$person_suffix = get_post_meta( $post->ID, '_organizational_person_suffix', true );
-		$person_title = get_post_meta( $post->ID, '_organizational_person_title', true );
+		$person_prefix          = get_post_meta( $post->ID, '_organizational_person_prefix', true );
+		$person_first_name      = get_post_meta( $post->ID, '_organizational_person_first_name', true );
+		$person_last_name       = get_post_meta( $post->ID, '_organizational_person_last_name', true );
+		$person_suffix          = get_post_meta( $post->ID, '_organizational_person_suffix', true );
+		$person_title           = get_post_meta( $post->ID, '_organizational_person_title', true );
 		$person_title_secondary = get_post_meta( $post->ID, '_organizational_person_title_secondary', true );
-		$person_office = get_post_meta( $post->ID, '_organizational_person_office', true );
-		$person_email = get_post_meta( $post->ID, '_organizational_person_email', true );
-		$person_phone = get_post_meta( $post->ID, '_organizational_person_phone', true );
+		$person_office          = get_post_meta( $post->ID, '_organizational_person_office', true );
+		$person_email           = get_post_meta( $post->ID, '_organizational_person_email', true );
+		$person_phone           = get_post_meta( $post->ID, '_organizational_person_phone', true );
 
 		wp_nonce_field( 'save_person_information', '_oranizational_person_information_nonce' );
 		?>
@@ -329,18 +329,4 @@ class Organizational_Meta {
 
 		return $data;
 	}
-}
-$organizational = new Organizational_Meta();
-
-/**
- * Provides a helper function for grabbing the meta data stored for people.
- *
- * @param int    $post_id ID of the person.
- * @param string $field   Friendly field name for the meta being requested.
- *
- * @return bool|mixed
- */
-function organizational_get_meta( $post_id, $field ) {
-	global $organizational;
-	return $organizational->get_meta( $post_id, $field );
 }
