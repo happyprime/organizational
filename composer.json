@@ -1,8 +1,8 @@
 {
-  "name": "washingtonstateuniversity/wsuwp-plugin-university-center",
+  "name": "happyprime/organizational",
   "authors": [
     {
-      "name": "Washington State University"
+      "name": "Happy Prime"
     }
   ],
   "require-dev": {

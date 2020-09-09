@@ -1,4 +1,4 @@
-.wsu-uc-objects-results {
+.organizational-objects-results {
 	margin-top: 25px;
 	width: 100%;
 }
@@ -15,7 +15,7 @@
 	border: 1px solid #ccc;
 }
 
-.uc-object-close {
+.organizational-object-close {
 	position: absolute;
 	display: block;
 	top: 7px;
@@ -25,32 +25,32 @@
 	font-family: "Dashicons";
 }
 
-.uc-object-close:hover {
+.organizational-object-close:hover {
 	cursor: pointer;
 	color: #9d1e15;
 }
 
-.wsuwp-uc-settings-names label {
+.organizational-settings-names label {
 	width: 13em;
 	float: left;
 	clear: left;
 	line-height: 27px;
 }
 
-.wsuwp-uc-settings-names input {
+.organizational-settings-names input {
 	float: left;
 }
 
-.wsuwp-uc-settings-names .description {
+.organizational-settings-names .description {
 	clear: left;
 	padding-top: 10px;
 }
 
-.wsuwp-uc-settings-names .description:first-of-type {
+.organizational-settings-names .description:first-of-type {
 	padding-top: 0;
 }
 
-.wsuwp-uc-settings-names p {
+.organizational-settings-names p {
 	max-width: 60%;
 }
 
