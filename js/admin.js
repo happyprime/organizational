@@ -24,7 +24,7 @@
 		$( "#" + event.data + "-assign-ids" ).val( objects_assign_ids );
 
 		// Update the autocomplete source data with the removed item.
-		window.wsu_uc[ event.data ].push( { "value": remove_id, "label": remove_name } );
+		window.organizational[ event.data ].push( { "value": remove_id, "label": remove_name } );
 
 		// Remove the actual item from the associated list.
 		remove_element.remove();
@@ -43,7 +43,7 @@
 		assign.autocomplete( {
 			appendTo: "#" + object_type + "-results",
 			minLength: 0,
-			source: window.wsu_uc[ object_type ],
+			source: window.organizational[ object_type ],
 			focus: function( event, ui ) {
 				assign.val( ui.item.label );
 				return false;
@@ -55,7 +55,7 @@
 
 				// Check to see if this object's ID is already in the list of added objects before adding it.
 				if ( 0 >= $( "#" + ui.item.value ).length ) {
-					$( "#" + object_type + "-results" ).append( "<div class=\"added-" + object_type + " added-object\" id=\"" + ui.item.value + "\" data-name=\"" + ui.item.label + "\">" + ui.item.label + "<span class=\"uc-object-close dashicons-no-alt\"></span></div>" );
+					$( "#" + object_type + "-results" ).append( "<div class=\"added-" + object_type + " added-object\" id=\"" + ui.item.value + "\" data-name=\"" + ui.item.label + "\">" + ui.item.label + "<span class=\"organizational-object-close dashicons-no-alt\"></span></div>" );
 
 					var current_ids = assign_ids.val();
 					if ( "" === current_ids ) {
@@ -65,7 +65,7 @@
 					}
 					assign_ids.val( current_ids );
 
-					delete window.wsu_uc[ object_type ][ 0 ][ ui.item.value ];
+					delete window.organizational[ object_type ][ 0 ][ ui.item.value ];
 				}
 
 				return false;
@@ -73,28 +73,28 @@
 		} );
 	}
 
-	window.wsuwp_uc_autocomplete_object = autocomplete_object;
-	window.wsuwp_uc_remove_object = remove_object;
+	window.organizational_autocomplete_object = autocomplete_object;
+	window.organizational_remove_object = remove_object;
 
 	$( document ).ready( function() {
-		if ( 0 !== $( "#wsuwp_uc_assign_people" ).length ) {
+		if ( 0 !== $( "#organizational_assign_people" ).length ) {
 			autocomplete_object( "people" );
-			$( "#people-results" ).on( "click", ".uc-object-close", "people", remove_object );
+			$( "#people-results" ).on( "click", ".organizational-object-close", "people", remove_object );
 		}
 
-		if ( 0 !== $( "#wsuwp_uc_assign_projects" ).length ) {
+		if ( 0 !== $( "#organizational_assign_projects" ).length ) {
 			autocomplete_object( "projects" );
-			$( "#projects-results" ).on( "click", ".uc-object-close", "projects", remove_object );
+			$( "#projects-results" ).on( "click", ".organizational-object-close", "projects", remove_object );
 		}
 
-		if ( 0 !== $( "#wsuwp_uc_assign_entities" ).length ) {
+		if ( 0 !== $( "#organizational_assign_entities" ).length ) {
 			autocomplete_object( "entities" );
-			$( "#entities-results" ).on( "click", ".uc-object-close", "entities", remove_object );
+			$( "#entities-results" ).on( "click", ".organizational-object-close", "entities", remove_object );
 		}
 
-		if ( 0 !== $( "#wsuwp_uc_assign_publications" ).length ) {
+		if ( 0 !== $( "#organizational_assign_publications" ).length ) {
 			autocomplete_object( "publications" );
-			$( "#publications-results" ).on( "click", ".uc-object-close", "publications", remove_object );
+			$( "#publications-results" ).on( "click", ".organizational-object-close", "publications", remove_object );
 		}
 	} );
 }( jQuery, window ) );

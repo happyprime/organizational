@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.0 (September 8, 2020)
+
+* Forked as "Organizational" from the WSUWP University Center plugin.
+
 ## 0.9.3 (August 8, 2017)
 
 * Ad filter to disable project output on other objects.
