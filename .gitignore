@@ -1,3 +1,2 @@
-composer.lock
-node_modules
-vendor
+/node_modules
+/vendor

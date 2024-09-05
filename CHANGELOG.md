@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.0 (September 5, 2024)
+
+* Everything is new again.
+
 ## 1.0.0 (September 8, 2020)
 
 * Forked as "Organizational" from the WSUWP University Center plugin.
