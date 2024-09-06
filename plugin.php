@@ -26,4 +26,4 @@ define( 'ORGANIZATIONAL_PLUGIN_FILE', __FILE__ );
 require_once __DIR__ . '/vendor/autoload.php';
 
 // Initialize the plugin.
-Init::init();
+Plugin::boot();

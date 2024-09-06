@@ -10,12 +10,12 @@ namespace HappyPrime\Organizational;
 /**
  * Initialize the plugin.
  */
-class Init {
+class Plugin {
 
 	/**
 	 * Initialize the plugin.
 	 */
-	public static function init(): void {
+	public static function boot(): void {
 		add_action( 'plugins_loaded', array( __CLASS__, 'init_plugin' ) );
 		add_action( 'init', array( __CLASS__, 'process_upgrade_routine' ), 5 );
 		add_action( 'init', array( __CLASS__, 'set_default_theme_support' ), 10 );
