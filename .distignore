@@ -1,0 +1,11 @@
+node_modules
+.distignore
+.gitignore
+.prettierrc.js
+composer.json
+composer.lock
+package-lock.json
+package.json
+phpcs.xml
+phpstan.neon.dist
+webpack.config.js
