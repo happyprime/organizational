@@ -103,6 +103,8 @@ class Init {
 			$organizational->publications = new Publications();
 			$organizational->publications->register();
 		}
+
+		$organizational->register_relationships();
 	}
 
 	/**
