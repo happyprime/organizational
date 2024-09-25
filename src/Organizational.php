@@ -46,6 +46,8 @@ class Organizational {
 
 	/**
 	 * Enable Shadow Terms to supported post types.
+	 *
+	 * @since 2.0.1
 	 */
 	public function register_relationships(): void {
 

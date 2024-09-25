@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.1 (September 24, 2024)
+
+* Add support for Shadow Terms.
+
 ## 2.0.0 (September 5, 2024)
 
 * Everything is new again.
