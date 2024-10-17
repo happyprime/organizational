@@ -49,9 +49,11 @@ class ContentType {
 	/**
 	 * Meta fields automatically registered for the post type.
 	 *
-	 * @var array
+	 * @return array
 	 */
-	public array $meta = [];
+	public function get_meta(): array {
+		return [];
+	}
 
 	/**
 	 * Register the post type.
@@ -70,7 +72,7 @@ class ContentType {
 	 * @return void
 	 */
 	public function register_meta(): void {
-		foreach ( $this->meta as $key => $args ) {
+		foreach ( $this->get_meta() as $key => $args ) {
 			register_post_meta(
 				$this->post_type,
 				$key,
@@ -80,6 +82,17 @@ class ContentType {
 					'type'         => $args['type'],
 				)
 			);
+
+			foreach ( $args['bindings_sources'] as $key => $source ) {
+				register_block_bindings_source(
+					$key,
+					array(
+						'label'              => $source['label'],
+						'get_value_callback' => $source['get_value_callback'],
+						'uses_context'       => $source['uses_context'],
+					)
+				);
+			}
 		}
 	}
 
