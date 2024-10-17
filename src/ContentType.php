@@ -49,6 +49,8 @@ class ContentType {
 	/**
 	 * Meta fields automatically registered for the post type.
 	 *
+	 * @since 2.1.0
+	 *
 	 * @return array
 	 */
 	public function get_meta(): array {

@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.0 (October 17, 2024)
+
+* Register a block binding source to render a `mailto:` link for a person's email address.
+
 ## 2.0.1 (September 24, 2024)
 
 * Add support for Shadow Terms.

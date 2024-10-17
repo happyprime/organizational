@@ -42,6 +42,8 @@ class People extends ContentType {
 	/**
 	 * Meta keys automatically registered for the post type.
 	 *
+	 * @since 2.1.0
+	 *
 	 * @return array
 	 */
 	public function get_meta(): array {
@@ -111,6 +113,8 @@ class People extends ContentType {
 
 	/**
 	 * Get binding source data for displaying a mailto link.
+	 *
+	 * @since 2.1.0
 	 *
 	 * @param array     $source_args     Array containing source arguments.
 	 * @param \WP_Block $block_instance  The block instance.
