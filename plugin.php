@@ -5,7 +5,7 @@
  * Description: Associate people, projects, organizations, and publications.
  * Author: Happy Prime
  * Author URI: https://happyprime.co
- * Version: 2.0.1
+ * Version: 2.1.0
  * License: GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  *
@@ -19,7 +19,7 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-define( 'ORGANIZATIONAL_VERSION', '2.0.1' );
+define( 'ORGANIZATIONAL_VERSION', '2.1.0' );
 define( 'ORGANIZATIONAL_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ORGANIZATIONAL_PLUGIN_FILE', __FILE__ );
 
