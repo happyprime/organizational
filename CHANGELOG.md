@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.1 (October 21, 2024)
+
+* Register people meta fields for website, LinkedIn, X (Twitter), Facebook, and Instagram.
+
 ## 2.1.0 (October 17, 2024)
 
 * Register a block binding source to render a `mailto:` link for a person's email address.
