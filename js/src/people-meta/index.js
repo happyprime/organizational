@@ -21,6 +21,11 @@ const PeopleMetaPanel = () => {
 		{ key: 'office', label: 'Office' },
 		{ key: 'email', label: 'Email' },
 		{ key: 'phone', label: 'Phone' },
+		{ key: 'website', label: 'Website' },
+		{ key: 'social_linkedin', label: 'LinkedIn' },
+		{ key: 'social_x', label: 'X (Twitter)' },
+		{ key: 'social_facebook', label: 'Facebook' },
+		{ key: 'social_instagram', label: 'Instagram' },
 	];
 
 	const renderTextControl = ({ key, label }) => {

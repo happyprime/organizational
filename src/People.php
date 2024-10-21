@@ -48,49 +48,49 @@ class People extends ContentType {
 	 */
 	public function get_meta(): array {
 		return [
-			'organizational_person_prefix'          => [
+			'organizational_person_prefix'           => [
 				'title'            => 'Prefix',
 				'type'             => 'string',
 				'show_in_rest'     => true,
 				'bindings_sources' => [],
 			],
-			'organizational_person_first_name'      => [
+			'organizational_person_first_name'       => [
 				'title'            => 'First Name',
 				'type'             => 'string',
 				'show_in_rest'     => true,
 				'bindings_sources' => [],
 			],
-			'organizational_person_last_name'       => [
+			'organizational_person_last_name'        => [
 				'title'            => 'Last Name',
 				'type'             => 'string',
 				'show_in_rest'     => true,
 				'bindings_sources' => [],
 			],
-			'organizational_person_suffix'          => [
+			'organizational_person_suffix'           => [
 				'title'            => 'Suffix',
 				'type'             => 'string',
 				'show_in_rest'     => true,
 				'bindings_sources' => [],
 			],
-			'organizational_person_title'           => [
+			'organizational_person_title'            => [
 				'title'            => 'Title',
 				'type'             => 'string',
 				'show_in_rest'     => true,
 				'bindings_sources' => [],
 			],
-			'organizational_person_title_secondary' => [
+			'organizational_person_title_secondary'  => [
 				'title'            => 'Secondary Title',
 				'type'             => 'string',
 				'show_in_rest'     => true,
 				'bindings_sources' => [],
 			],
-			'organizational_person_office'          => [
+			'organizational_person_office'           => [
 				'title'            => 'Office',
 				'type'             => 'string',
 				'show_in_rest'     => true,
 				'bindings_sources' => [],
 			],
-			'organizational_person_email'           => [
+			'organizational_person_email'            => [
 				'title'            => 'Email',
 				'type'             => 'string',
 				'show_in_rest'     => true,
@@ -102,8 +102,38 @@ class People extends ContentType {
 					],
 				],
 			],
-			'organizational_person_phone'           => [
+			'organizational_person_phone'            => [
 				'title'            => 'Phone',
+				'type'             => 'string',
+				'show_in_rest'     => true,
+				'bindings_sources' => [],
+			],
+			'organizational_person_website'          => [
+				'title'            => 'Website',
+				'type'             => 'string',
+				'show_in_rest'     => true,
+				'bindings_sources' => [],
+			],
+			'organizational_person_social_linkedin'  => [
+				'title'            => 'LinkedIn',
+				'type'             => 'string',
+				'show_in_rest'     => true,
+				'bindings_sources' => [],
+			],
+			'organizational_person_social_x'         => [
+				'title'            => 'X (Twitter)',
+				'type'             => 'string',
+				'show_in_rest'     => true,
+				'bindings_sources' => [],
+			],
+			'organizational_person_social_facebook'  => [
+				'title'            => 'Facebook',
+				'type'             => 'string',
+				'show_in_rest'     => true,
+				'bindings_sources' => [],
+			],
+			'organizational_person_social_instagram' => [
+				'title'            => 'Instagram',
 				'type'             => 'string',
 				'show_in_rest'     => true,
 				'bindings_sources' => [],
