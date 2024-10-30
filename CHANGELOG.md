@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.0 (October 30, 2024)
+
+* Add additional meta fields for publications.
+
 ## 2.1.2 (October 30, 2024)
 
 * Fix a bug in detecting supported post types in admin.
