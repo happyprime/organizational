@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.2 (October 30, 2024)
+
+* Fix a bug in detecting supported post types in admin.
+
 ## 2.1.1 (October 21, 2024)
 
 * Register people meta fields for website, LinkedIn, X (Twitter), Facebook, and Instagram.
