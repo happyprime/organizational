@@ -7,6 +7,7 @@ const TerserPlugin = require('terser-webpack-plugin');
  * Retrieve all entries from subdirectories of the src directory.
  *
  * Valid entry points are index.js and view.js.
+ *
  * @param sourceDir
  * @param type
  * @returns {object} An object of entry points.
