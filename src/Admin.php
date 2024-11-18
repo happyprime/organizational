@@ -109,6 +109,29 @@ class Admin {
 	}
 
 	/**
+	 * Render a settings field for a content type's singular and plural names.
+	 *
+	 * @param string $post_type Post type.
+	 * @param string $label Label.
+	 * @param string $value Value.
+	 * @param string $type Type.
+	 */
+	public static function render_content_type_field( string $post_type, string $label, string $value, string $type ): void {
+		?>
+			<div>
+				<label for="<?php echo esc_attr( self::get_id( $post_type, $type ) ); ?>"><?php echo esc_html( $label ); ?></label>
+				<input
+					id="<?php echo esc_attr( self::get_id( $post_type, $type ) ); ?>"
+					name="<?php echo esc_attr( self::get_name( $post_type, $type ) ); ?>"
+					value="<?php echo esc_attr( $value ); ?>"
+					type="text"
+					class="regular-text"
+				/>
+			</div>
+		<?php
+	}
+
+	/**
 	 * Output the settings fields for the Organizational plugin.
 	 */
 	public static function general_settings_names(): void {
@@ -181,101 +204,27 @@ class Admin {
 		<div class="organizational-settings-names">
 			<p>Changing the settings here will override the default labels for the content types provided by the Organizational plugin. The default labels are listed to the left of each field. The <strong>singular</strong> label will also be used as a slug in URLs.</p>
 
-			<?php if ( isset( $organizational->projects ) ) : ?>
-			<div>
-				<label for="<?php echo esc_attr( self::get_id( $organizational->projects->post_type, 'singular' ) ); ?>">Project (Singular)</label>
-				<input
-					id="<?php echo esc_attr( self::get_id( $organizational->projects->post_type, 'singular' ) ); ?>"
-					name="<?php echo esc_attr( self::get_name( $organizational->projects->post_type, 'singular' ) ); ?>"
-					value="<?php echo esc_attr( $display_names[ $organizational->projects->post_type ]['singular'] ); ?>"
-					type="text"
-					class="regular-text"
-				/>
-			</div>
+			<?php
+			if ( isset( $organizational->projects ) ) {
+				self::render_content_type_field( $organizational->projects->post_type, 'Project (Singular)', $display_names[ $organizational->projects->post_type ]['singular'], 'singular' );
+				self::render_content_type_field( $organizational->projects->post_type, 'Projects (Plural)', $display_names[ $organizational->projects->post_type ]['plural'], 'plural' );
+			}
 
-			<div>
-				<label for="<?php echo esc_attr( self::get_id( $organizational->projects->post_type, 'plural' ) ); ?>">Projects (Plural)</label>
-				<input
-					id="<?php echo esc_attr( self::get_id( $organizational->projects->post_type, 'plural' ) ); ?>"
-					name="<?php echo esc_attr( self::get_name( $organizational->projects->post_type, 'plural' ) ); ?>"
-					value="<?php echo esc_attr( $display_names[ $organizational->projects->post_type ]['plural'] ); ?>"
-					type="text"
-					class="regular-text"
-				/>
-			</div>
-			<?php endif; ?>
+			if ( isset( $organizational->people ) ) {
+				self::render_content_type_field( $organizational->people->post_type, 'Person (Singular)', $display_names[ $organizational->people->post_type ]['singular'], 'singular' );
+				self::render_content_type_field( $organizational->people->post_type, 'People (Plural)', $display_names[ $organizational->people->post_type ]['plural'], 'plural' );
+			}
 
-			<?php if ( isset( $organizational->people ) ) : ?>
-			<div>
-				<label for="organizational_names_people_singular">Person (Singular)</label>
-				<input
-					id="<?php echo esc_attr( self::get_id( $organizational->people->post_type, 'singular' ) ); ?>"
-					name="<?php echo esc_attr( self::get_name( $organizational->people->post_type, 'singular' ) ); ?>"
-					value="<?php echo esc_attr( $display_names[ $organizational->people->post_type ]['singular'] ); ?>"
-					type="text"
-					class="regular-text"
-				/>
-			</div>
+			if ( isset( $organizational->entities ) ) {
+				self::render_content_type_field( $organizational->entities->post_type, 'Entity (Singular)', $display_names[ $organizational->entities->post_type ]['singular'], 'singular' );
+				self::render_content_type_field( $organizational->entities->post_type, 'Entities (Plural)', $display_names[ $organizational->entities->post_type ]['plural'], 'plural' );
+			}
 
-			<div>
-				<label for="organizational_names_people_plural">People (Plural)</label>
-				<input
-					id="<?php echo esc_attr( self::get_id( $organizational->people->post_type, 'plural' ) ); ?>"
-					name="<?php echo esc_attr( self::get_name( $organizational->people->post_type, 'plural' ) ); ?>"
-					value="<?php echo esc_attr( $display_names[ $organizational->people->post_type ]['plural'] ); ?>"
-					type="text"
-					class="regular-text"
-				/>
-			</div>
-			<?php endif; ?>
-
-			<?php if ( isset( $organizational->entities ) ) : ?>
-			<div>
-				<label for="organizational_names_entity_singular">Entity (Singular)</label>
-				<input
-					id="<?php echo esc_attr( self::get_id( $organizational->entities->post_type, 'singular' ) ); ?>"
-					name="<?php echo esc_attr( self::get_name( $organizational->entities->post_type, 'singular' ) ); ?>"
-					value="<?php echo esc_attr( $display_names[ $organizational->entities->post_type ]['singular'] ); ?>"
-					type="text"
-					class="regular-text"
-				/>
-			</div>
-
-			<div>
-				<label for="organizational_names_entity_plural">Entities (Plural)</label>
-				<input
-					id="<?php echo esc_attr( self::get_id( $organizational->entities->post_type, 'plural' ) ); ?>"
-					name="<?php echo esc_attr( self::get_name( $organizational->entities->post_type, 'plural' ) ); ?>"
-					value="<?php echo esc_attr( $display_names[ $organizational->entities->post_type ]['plural'] ); ?>"
-					type="text"
-					class="regular-text"
-				/>
-			</div>
-			<?php endif; ?>
-
-			<?php if ( isset( $organizational->publications ) ) : ?>
-			<div>
-				<label for="organizational_names_publication_singular">Publication (Singular)</label>
-				<input
-					id="<?php echo esc_attr( self::get_id( $organizational->publications->post_type, 'singular' ) ); ?>"
-					name="<?php echo esc_attr( self::get_name( $organizational->publications->post_type, 'singular' ) ); ?>"
-					value="<?php echo esc_attr( $display_names[ $organizational->publications->post_type ]['singular'] ); ?>"
-					type="text"
-					class="regular-text"
-				/>
-			</div>
-
-			<div>
-				<label for="organizational_names_publication_plural">Publications (Plural)</label>
-				<input
-					id="<?php echo esc_attr( self::get_id( $organizational->publications->post_type, 'plural' ) ); ?>"
-					name="<?php echo esc_attr( self::get_name( $organizational->publications->post_type, 'plural' ) ); ?>"
-					value="<?php echo esc_attr( $display_names[ $organizational->publications->post_type ]['plural'] ); ?>"
-					type="text"
-					class="regular-text"
-				/>
-			</div>
-			<?php endif; ?>
+			if ( isset( $organizational->publications ) ) {
+				self::render_content_type_field( $organizational->publications->post_type, 'Publication (Singular)', $display_names[ $organizational->publications->post_type ]['singular'], 'singular' );
+				self::render_content_type_field( $organizational->publications->post_type, 'Publications (Plural)', $display_names[ $organizational->publications->post_type ]['plural'], 'plural' );
+			}
+			?>
 		</div>
 		<?php
 	}
