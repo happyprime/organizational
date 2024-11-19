@@ -19,7 +19,7 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-const VERSION = '2.2.0';
+const VERSION     = '2.2.0';
 const PLUGIN_FILE = __FILE__;
 
 require_once __DIR__ . '/vendor/autoload.php';
