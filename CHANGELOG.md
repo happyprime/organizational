@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.3.0 (November 19, 2024)
+
+* Provide an option to activate a taxonomy for each content type.
+* Move the settings page to Settings -> Organizational.
+
 ## 2.2.0 (October 30, 2024)
 
 * Add additional meta fields for publications.
