@@ -55,7 +55,7 @@ class Init {
 			flush_rewrite_rules();
 		}
 
-		update_option( 'organizational_version', ORGANIZATIONAL_VERSION );
+		update_option( 'organizational_version', VERSION );
 	}
 
 	/**

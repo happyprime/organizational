@@ -202,11 +202,11 @@ class People extends ContentType {
 			return;
 		}
 
-		$asset_data = require_once ORGANIZATIONAL_PLUGIN_DIR . '/js/build/people-meta/index.asset.php';
+		$asset_data = require_once plugin_dir_path( PLUGIN_FILE ) . '/js/build/people-meta/index.asset.php';
 
 		wp_enqueue_script(
 			'organizational-people-meta',
-			plugins_url( '/js/build/people-meta/index.js', ORGANIZATIONAL_PLUGIN_FILE ),
+			plugins_url( '/js/build/people-meta/index.js', PLUGIN_FILE ),
 			$asset_data['dependencies'],
 			$asset_data['version'],
 			true

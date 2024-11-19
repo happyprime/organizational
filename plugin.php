@@ -19,9 +19,8 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-define( 'ORGANIZATIONAL_VERSION', '2.2.0' );
-define( 'ORGANIZATIONAL_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-define( 'ORGANIZATIONAL_PLUGIN_FILE', __FILE__ );
+const VERSION = '2.2.0';
+const PLUGIN_FILE = __FILE__;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
