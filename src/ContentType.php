@@ -12,7 +12,7 @@ namespace HappyPrime\Organizational;
  */
 class ContentType {
 	/**
-	 * The post type.
+	 * The post type slug.
 	 *
 	 * @var string
 	 */
@@ -47,6 +47,34 @@ class ContentType {
 	public string $plural_name = '';
 
 	/**
+	 * Whether the additional taxonomy is active.
+	 *
+	 * @var bool
+	 */
+	public bool $taxonomy_active = false;
+
+	/**
+	 * The slug for an additional taxonomy associated with the content type.
+	 *
+	 * @var string
+	 */
+	public string $taxonomy = '';
+
+	/**
+	 * The plural name of an additional taxonomy for the content type.
+	 *
+	 * @var string
+	 */
+	public string $taxonomy_plural_name = '';
+
+	/**
+	 * The singular name of an additional taxonomy for the content type.
+	 *
+	 * @var string
+	 */
+	public string $taxonomy_singular_name = '';
+
+	/**
 	 * Meta fields automatically registered for the post type.
 	 *
 	 * @since 2.1.0
@@ -66,6 +94,10 @@ class ContentType {
 		register_post_type( $this->post_type, $this->get_args() );
 
 		$this->register_meta();
+
+		if ( $this->taxonomy_active ) {
+			$this->register_taxonomy();
+		}
 	}
 
 	/**
@@ -96,6 +128,15 @@ class ContentType {
 				);
 			}
 		}
+	}
+
+	/**
+	 * Register the additional taxonomy for the content type.
+	 *
+	 * @return void
+	 */
+	public function register_taxonomy(): void {
+		register_taxonomy( $this->taxonomy, $this->post_type, $this->get_taxonomy_args() );
 	}
 
 	/**
@@ -169,6 +210,41 @@ class ContentType {
 	}
 
 	/**
+	 * Retrieve the arguments for taxonomy registration.
+	 *
+	 * @return array
+	 */
+	public function get_taxonomy_args(): array {
+		$args = array(
+			'label'                 => $this->taxonomy_plural_name,
+			'labels'                => array(
+				'name'          => $this->taxonomy_plural_name,
+				'singular_name' => $this->taxonomy_singular_name,
+			),
+			'public'                => true,
+			'publicly_queryable'    => true,
+			'hierarchical'          => true,
+			'show_ui'               => true,
+			'show_in_menu'          => true,
+			'show_in_nav_menus'     => true,
+			'query_var'             => true,
+			'rewrite'               => array(
+				'slug'       => sanitize_title( strtolower( $this->taxonomy_singular_name ) ),
+				'with_front' => true,
+			),
+			'show_admin_column'     => true,
+			'show_in_rest'          => true,
+			'rest_base'             => sanitize_title( strtolower( $this->taxonomy_plural_name ) ),
+			'rest_controller_class' => 'WP_REST_Terms_Controller',
+			'show_in_quick_edit'    => true,
+		);
+
+		$args = apply_filters( "organizational_{$this->post_type}_taxonomy_args", $args );
+
+		return $args;
+	}
+
+	/**
 	 * Retrieve object type names from a previously saved names option.
 	 *
 	 * @return array A list of singular and plural names.
@@ -184,11 +260,26 @@ class ContentType {
 			$this->plural_name = $names[ $this->post_type ]['plural'] ? $names[ $this->post_type ]['plural'] : $this->plural_name;
 		}
 
+		if ( false !== $names && isset( $names[ $this->post_type ] ) && isset( $names[ $this->post_type ]['taxonomy_singular'] ) ) {
+			$this->taxonomy_singular_name = $names[ $this->post_type ]['taxonomy_singular'] ? $names[ $this->post_type ]['taxonomy_singular'] : $this->taxonomy_singular_name;
+		}
+
+		if ( false !== $names && isset( $names[ $this->post_type ] ) && isset( $names[ $this->post_type ]['taxonomy_plural'] ) ) {
+			$this->taxonomy_plural_name = $names[ $this->post_type ]['taxonomy_plural'] ? $names[ $this->post_type ]['taxonomy_plural'] : $this->taxonomy_plural_name;
+		}
+
+		if ( false !== $names && isset( $names[ $this->post_type ] ) && isset( $names[ $this->post_type ]['taxonomy_toggle'] ) ) {
+			$this->taxonomy_active = $names[ $this->post_type ]['taxonomy_toggle'] ? true : false;
+		}
+
 		return apply_filters(
 			"organizational_{$this->post_type}_type_names",
 			array(
-				'singular' => $this->singular_name,
-				'plural'   => $this->plural_name,
+				'singular'          => $this->singular_name,
+				'plural'            => $this->plural_name,
+				'taxonomy_active'   => $this->taxonomy_active,
+				'taxonomy_singular' => $this->taxonomy_singular_name,
+				'taxonomy_plural'   => $this->taxonomy_plural_name,
 			)
 		);
 	}

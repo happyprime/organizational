@@ -45,6 +45,20 @@ class Organizational {
 	public function __construct() {}
 
 	/**
+	 * Retrieve supported content types for the site.
+	 *
+	 * @return ContentType[]
+	 */
+	public function get_content_types(): array {
+		return array_filter(
+			get_object_vars( $this ),
+			function ( $property ) {
+				return $property instanceof ContentType;
+			}
+		);
+	}
+
+	/**
 	 * Enable Shadow Terms to supported post types.
 	 *
 	 * @since 2.0.1

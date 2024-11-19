@@ -55,7 +55,7 @@ class Init {
 			flush_rewrite_rules();
 		}
 
-		update_option( 'organizational_version', ORGANIZATIONAL_VERSION );
+		update_option( 'organizational_version', VERSION );
 	}
 
 	/**
@@ -117,20 +117,8 @@ class Init {
 			return;
 		}
 
-		if ( current_theme_supports( 'organizational_person' ) ) {
-			$organizational->people->enqueue_block_editor_assets();
-		}
-
-		if ( current_theme_supports( 'organizational_project' ) ) {
-			$organizational->projects->enqueue_block_editor_assets();
-		}
-
-		if ( current_theme_supports( 'organizational_entity' ) ) {
-			$organizational->entities->enqueue_block_editor_assets();
-		}
-
-		if ( current_theme_supports( 'organizational_publication' ) ) {
-			$organizational->publications->enqueue_block_editor_assets();
+		foreach ( $organizational->get_content_types() as $content_type ) {
+			$content_type->enqueue_block_editor_assets();
 		}
 	}
 }
