@@ -19,6 +19,16 @@ class Entities extends ContentType {
 	public string $post_type = 'og_entity';
 
 	/**
+	 * The default name.
+	 *
+	 * Used to refer to the content type in the admin settings even after the
+	 * name has been overridden.
+	 *
+	 * @var string
+	 */
+	public string $default_name = 'Entities';
+
+	/**
 	 * The singular name.
 	 *
 	 * @var string
@@ -38,4 +48,25 @@ class Entities extends ContentType {
 	 * @var string
 	 */
 	public string $menu_icon = 'dashicons-groups';
+
+	/**
+	 * The slug for an additional taxonomy associated with the content type.
+	 *
+	 * @var string
+	 */
+	public string $taxonomy = 'og_entity_group';
+
+	/**
+	 * The plural name of an additional taxonomy for the content type.
+	 *
+	 * @var string
+	 */
+	public string $taxonomy_plural_name = 'Entity Groups';
+
+	/**
+	 * The singular name of an additional taxonomy for the content type.
+	 *
+	 * @var string
+	 */
+	public string $taxonomy_singular_name = 'Entity Group';
 }
