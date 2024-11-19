@@ -198,7 +198,7 @@ class People extends ContentType {
 	 * Enqueue block editor assets used by this post type.
 	 */
 	public function enqueue_block_editor_assets(): void {
-		if ( 'post' !== get_current_screen()->base || get_current_screen()->post_type !== $this->post_type ) {
+		if ( ! get_current_screen() || 'post' !== get_current_screen()->base || get_current_screen()->post_type !== $this->post_type ) {
 			return;
 		}
 

@@ -2,4 +2,6 @@ includes:
   - %rootDir%/../../happyprime/coding-standards/phpstan.neon.dist
 
 parameters:
-  level: 5
+  level: 8
+  ignoreErrors:
+    - identifier: missingType.iterableValue
