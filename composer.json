@@ -1,35 +1,36 @@
 {
-  "name": "happyprime/organizational",
-  "description": "Associate people, projects, organizations, and publications in WordPress",
-  "authors": [
-	{
-	  "name": "Happy Prime"
+	"name": "happyprime/organizational",
+	"description": "Associate people, projects, organizations, and publications in WordPress",
+	"authors": [
+		{
+			"name": "Happy Prime"
+		}
+	],
+	"type": "wordpress-plugin",
+	"license": "GPL-2.0-or-later",
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true,
+			"composer/installers": true,
+			"phpstan/extension-installer": true
+		},
+		"platform": {
+			"php": "7.4"
+		}
+	},
+	"autoload": {
+		"psr-4": {
+			"HappyPrime\\Organizational\\": "src/"
+		}
+	},
+	"require-dev": {
+		"happyprime/coding-standards": "*",
+		"phpcompatibility/php-compatibility": "dev-develop as 9.99.99"
+	},
+	"scripts": {
+		"build": "npm run build && composer install --no-dev --optimize-autoloader && wp dist-archive .",
+		"phpcs": "vendor/bin/phpcs",
+		"phpcbf": "vendor/bin/phpcbf",
+		"phpstan": "vendor/bin/phpstan analyse --memory-limit=2048M"
 	}
-  ],
-  "type": "wordpress-plugin",
-  "license": "GPL-2.0-or-later",
-  "config": {
-	  "allow-plugins": {
-		  "dealerdirect/phpcodesniffer-composer-installer": true,
-		  "composer/installers": true,
-		  "phpstan/extension-installer": true
-	  },
-	  "platform": {
-		  "php": "7.4"
-	  }
-  },
-  "autoload": {
-	"psr-4": {
-		"HappyPrime\\Organizational\\": "src/"
-	}
-  },
-  "require-dev": {
-	  "happyprime/coding-standards": "*",
-	  "phpcompatibility/php-compatibility": "dev-develop as 9.99.99"
-  },
-  "scripts": {
-	  "phpcs": "vendor/bin/phpcs",
-	  "phpcbf": "vendor/bin/phpcbf",
-	  "phpstan": "vendor/bin/phpstan analyse --memory-limit=2048M"
-  }
 }
