@@ -23,6 +23,7 @@ class Init {
 		add_action( 'init', array( __CLASS__, 'init_admin' ), 100 );
 		add_action( 'enqueue_block_editor_assets', array( __CLASS__, 'enqueue_block_editor_assets' ) );
 		add_action( 'organizational_flush_rewrite_rules', 'flush_rewrite_rules' );
+		add_action( 'add_meta_boxes', array( __CLASS__, 'remove_custom_fields_meta_box' ) );
 	}
 
 	/**
@@ -119,6 +120,22 @@ class Init {
 
 		foreach ( $organizational->get_content_types() as $content_type ) {
 			$content_type->enqueue_block_editor_assets();
+		}
+	}
+
+	/**
+	 * Remove the custom fields meta box for supported content types
+	 * to prevent conflicts with fields in the block editor.
+	 */
+	public static function remove_custom_fields_meta_box(): void {
+		global $organizational;
+
+		if ( ! isset( $organizational ) ) {
+			return;
+		}
+
+		foreach ( $organizational->get_content_types() as $content_type ) {
+			remove_meta_box( 'postcustom', $content_type->post_type, 'normal' );
 		}
 	}
 }
