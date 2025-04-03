@@ -1,12 +1,13 @@
 {
   "name": "happyprime/organizational",
+  "description": "Associate people, projects, organizations, and publications in WordPress",
   "authors": [
 	{
 	  "name": "Happy Prime"
 	}
   ],
   "type": "wordpress-plugin",
-  "license": "GPLv2+",
+  "license": "GPL-2.0-or-later",
   "config": {
 	  "allow-plugins": {
 		  "dealerdirect/phpcodesniffer-composer-installer": true,
