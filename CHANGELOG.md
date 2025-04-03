@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.3.1 (April 4, 2025)
+
+* Remove the custom fields meta box for supported content types. Custom fields
+  are managed via the block editor.
+
 ## 2.3.0 (November 19, 2024)
 
 * Provide an option to activate a taxonomy for each content type.
