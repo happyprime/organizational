@@ -1,50 +1,51 @@
 {
-  "name": "organizational",
-  "version": "2.3.1",
-  "description": "",
-  "author": "Happy Prime",
-  "license": "GPL-2.0-or-later",
-  "keywords": [
-    "wordpress"
-  ],
-  "homepage": "https://github.com/happyprime/organizational#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/happyprime/organizational.git"
-  },
-  "bugs": {
-    "url": "https://github.com/happyprime/organizational/issues"
-  },
-  "engines": {
-    "node": ">=20",
-    "npm": ">=10"
-  },
-  "devDependencies": {
-	"@babel/core": "^7.26.10",
-	"@babel/plugin-transform-runtime": "^7.26.10",
-	"@babel/preset-env": "^7.26.9",
-	"@babel/preset-react": "^7.26.3",
-	"@happyprime/eslint-config": "0.0.14",
-	"@wordpress/browserslist-config": "^6.21.0",
-	"@wordpress/dependency-extraction-webpack-plugin": "^6.21.0",
-	"@wordpress/npm-package-json-lint-config": "^5.21.0",
-	"babel-loader": "^10.0.0",
-	"copy-webpack-plugin": "^13.0.0",
-	"npm-package-json-lint": "^8.0.0",
-	"webpack": "^5.98.0",
-	"webpack-cli": "^6.0.1"
-  },
-  "scripts": {
-    "build": "webpack --mode production --env dir=js/src/",
-    "start": "webpack --mode development --watch --env dir=js/src/",
-    "lint": "eslint .",
-    "fix": "eslint . --fix",
-    "lint:package": "node ./node_modules/npm-package-json-lint/dist/cli.js ./"
-  },
-  "browserslist": [
-    "extends @wordpress/browserslist-config"
-  ],
-  "npmpackagejsonlint": {
-    "extends": "@wordpress/npm-package-json-lint-config"
-  }
+	"name": "organizational",
+	"version": "2.3.1",
+	"description": "Associate people, projects, organizations, and publications in WordPress.",
+	"author": "Happy Prime",
+	"license": "GPL-2.0-or-later",
+	"keywords": [
+		"wordpress"
+	],
+	"homepage": "https://github.com/happyprime/organizational#readme",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/happyprime/organizational.git"
+	},
+	"bugs": {
+		"url": "https://github.com/happyprime/organizational/issues"
+	},
+	"engines": {
+		"node": ">=20",
+		"npm": ">=10"
+	},
+	"devDependencies": {
+		"@babel/core": "^7.26.10",
+		"@babel/plugin-transform-runtime": "^7.26.10",
+		"@babel/preset-env": "^7.26.9",
+		"@babel/preset-react": "^7.26.3",
+		"@happyprime/eslint-config": "0.0.14",
+		"@wordpress/browserslist-config": "^6.21.0",
+		"@wordpress/dependency-extraction-webpack-plugin": "^6.21.0",
+		"@wordpress/npm-package-json-lint-config": "^5.21.0",
+		"babel-loader": "^10.0.0",
+		"copy-webpack-plugin": "^13.0.0",
+		"npm-package-json-lint": "^8.0.0",
+		"webpack": "^5.98.0",
+		"webpack-cli": "^6.0.1"
+	},
+	"scripts": {
+		"build": "webpack --mode production --env dir=js/src/",
+		"start": "webpack --mode development --watch --env dir=js/src/",
+		"lint": "npm run lint:js",
+		"fix": "eslint . --fix",
+		"lint:package": "node ./node_modules/npm-package-json-lint/dist/cli.js ./package.json",
+		"lint:js": "eslint ."
+	},
+	"browserslist": [
+		"extends @wordpress/browserslist-config"
+	],
+	"npmpackagejsonlint": {
+		"extends": "@wordpress/npm-package-json-lint-config"
+	}
 }
