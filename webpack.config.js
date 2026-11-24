@@ -1,5 +1,5 @@
 const path = require('path');
-const glob = require('glob');
+const { globSync } = require('node:fs');
 const DependencyExtractionWebpackPlugin = require('@wordpress/dependency-extraction-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 
@@ -17,7 +17,7 @@ const getEntries = (sourceDir, type) => {
 
 	const filescan = 'blocks' === type ? '**/*(index|view).js' : '*.js';
 
-	const files = glob.sync(sourceDir + '/' + filescan);
+	const files = globSync(sourceDir + '/' + filescan);
 
 	files.forEach((file) => {
 		const relativePath = path.relative(sourceDir, file);
